@@ -1,0 +1,50 @@
+{
+  "admin": [
+    {
+      "label": "Рецептурные препараты",
+      "link": "/medicines"
+    },
+    {
+      "label": "Создание рецептурного препарата",
+      "link": "/medicines/create"
+    },
+    {
+      "label": "Пользователи",
+      "link": "/users"
+    },
+    {
+      "label": "Создание пользователя",
+      "link": "/users/create"
+    }
+  ],
+  "doctor": [
+    {
+      "label": "Рецептурные препараты",
+      "link": "/medicines"
+    },
+    {
+      "label": "Рецепты",
+      "link": "/prescriptions"
+    },
+    {
+      "label": "Создание рецепта",
+      "link": "/prescriptions/create"
+    }
+  ],
+  "pharmacist": [
+    {
+      "label": "Рецептурные препараты",
+      "link": "/medicines"
+    },
+    {
+      "label": "Рецепты",
+      "link": "/prescriptions"
+    }
+  ],
+  "patient": [
+    {
+      "label": "Рецепты",
+      "link": "/prescriptions"
+    }
+  ]
+}
