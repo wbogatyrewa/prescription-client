@@ -4,6 +4,7 @@ import {
   UserData,
 } from "../../../contexts/AppContext/AppContext";
 import styles from "./LoginPage.module.css";
+import { Button, Form, Input, Layout } from "antd";
 
 const mockUsers: Record<string, UserData> = {
   admin: {
@@ -32,39 +33,89 @@ const mockUsers: Record<string, UserData> = {
   },
 };
 
+type FieldType = {
+  email?: string;
+  password?: string;
+};
+
 export const LoginPage = () => {
   const { setUserData } = useAppContext();
   const navigate = useNavigate();
 
   const login = (user: UserData | null) => {
     setUserData(user);
-    if (user) {
+    if (user && user?.role !== "patient") {
       navigate("/medicines");
+    } else if (user) {
+      navigate("/prescriptions");
     }
   };
 
   return (
-    <div className={styles.loginPage}>
-      <div>
-        <button onClick={() => login(null)}>Выход</button>
+    <Layout className={styles.loginPage}>
+      {/* <button onClick={() => login(mockUsers.admin)}>Войти как админ</button>
+      <button onClick={() => login(mockUsers.doctor)}>Войти как врач</button>
+      <button onClick={() => login(mockUsers.pharmacist)}>
+        Войти как фармацевт
+      </button>
+      <button onClick={() => login(mockUsers.patient)}>
+        Войти как пациент
+      </button> */}
 
-        <div className="text-center">
-          <div className="flex gap-4 justify-center">
-            <button onClick={() => login(mockUsers.admin)}>
-              Войти как админ
-            </button>
-            <button onClick={() => login(mockUsers.doctor)}>
-              Войти как врач
-            </button>
-            <button onClick={() => login(mockUsers.pharmacist)}>
-              Войти как фармацевт
-            </button>
-            <button onClick={() => login(mockUsers.patient)}>
-              Войти как пациент
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
+      <Form className={styles.loginForm} autoComplete="off">
+        <Form.Item<FieldType>
+          label="Email"
+          name="email"
+          rules={[{ required: true, message: "Введите email" }]}
+        >
+          <Input />
+        </Form.Item>
+
+        <Form.Item<FieldType>
+          label="Пароль"
+          name="password"
+          rules={[{ required: true, message: "Введите пароль" }]}
+        >
+          <Input.Password />
+        </Form.Item>
+
+        <Form.Item label={null}>
+          <Button
+            type="primary"
+            onClick={() => login(mockUsers.admin)}
+            className={styles.login}
+          >
+            Войти как админ
+          </Button>
+        </Form.Item>
+        <Form.Item label={null}>
+          <Button
+            type="primary"
+            onClick={() => login(mockUsers.doctor)}
+            className={styles.login}
+          >
+            Войти как врач
+          </Button>
+        </Form.Item>
+        <Form.Item label={null}>
+          <Button
+            type="primary"
+            onClick={() => login(mockUsers.pharmacist)}
+            className={styles.login}
+          >
+            Войти как фармацевт
+          </Button>
+        </Form.Item>
+        <Form.Item label={null}>
+          <Button
+            type="primary"
+            onClick={() => login(mockUsers.patient)}
+            className={styles.login}
+          >
+            Войти как пациент
+          </Button>
+        </Form.Item>
+      </Form>
+    </Layout>
   );
 };

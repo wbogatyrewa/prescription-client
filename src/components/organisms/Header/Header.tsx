@@ -1,11 +1,11 @@
 import { Header as AntdHeader } from "antd/es/layout/layout";
 import styles from "./Header.module.css";
-import { Avatar, Button, Menu, Typography } from "antd";
+import { Avatar, Button, Menu } from "antd";
 import header from "../../../../content/header.json";
 import { useMemo } from "react";
 import { useAppContext } from "../../../contexts/AppContext/AppContext";
 import { UserOutlined } from "@ant-design/icons";
-import { useNavigate } from "react-router";
+import { Link, useNavigate } from "react-router";
 
 export const Header = () => {
   const { userData, setUserData } = useAppContext();
@@ -23,8 +23,7 @@ export const Header = () => {
       role
         ? header[role].map((item, index) => ({
             key: index + 1,
-            label: item.label,
-            link: item.link,
+            label: <Link to={item.link}>{item.label}</Link>,
           }))
         : [],
     [role]
@@ -39,12 +38,15 @@ export const Header = () => {
         defaultSelectedKeys={["1"]}
         items={items}
       />
-      <Button type="text" className={styles.avatar} onClick={logoff}>
+      <Button type="text" className={styles.avatar}>
         <Avatar
           style={{ backgroundColor: "#1890FF" }}
           icon={<UserOutlined />}
         />
-        <Typography>{userData?.username}</Typography>
+        {userData?.username}
+      </Button>
+      <Button type="primary" className={styles.logoff} onClick={logoff}>
+        Выйти
       </Button>
     </AntdHeader>
   );
