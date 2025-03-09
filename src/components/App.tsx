@@ -3,6 +3,7 @@ import { LoginPage } from "./pages/LoginPage/LoginPage";
 import { MedicinesPage } from "./pages/MedicinesPage/MedicinesPage";
 import { useAppContext } from "../contexts/AppContext/AppContext";
 import { useEffect } from "react";
+import { CreatePrescriptionPage } from "./pages/CreatePrescriptionPage/CreatePrescriptionPage";
 
 function App() {
   const { userData } = useAppContext();
@@ -14,7 +15,15 @@ function App() {
   return (
     <Routes>
       <Route path="/" element={<LoginPage />} />
-      {!!userData && <Route path="/medicines" element={<MedicinesPage />} />}
+      {/* {!!userData && ( */}
+      <>
+        <Route path="/medicines" element={<MedicinesPage />} />
+        <Route
+          path="/prescriptions/create"
+          element={<CreatePrescriptionPage />}
+        />
+      </>
+      {/* )} */}
       <Route path="*" element={<>Страница не найдена</>} />
     </Routes>
   );

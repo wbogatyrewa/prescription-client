@@ -1,7 +1,8 @@
 import Layout, { Content } from "antd/es/layout/layout";
 import { Header } from "../../organisms/Header/Header";
 import { Table } from "antd";
-// import styles from "./MedicinesPage.module.css";
+import styles from "./MedicinesPage.module.css";
+import { Link } from "react-router";
 
 const dataSource = [
   {
@@ -45,8 +46,10 @@ const columns = [
   },
   {
     title: "Действия",
-    dataIndex: "actions",
     key: "actions",
+    render: (_, render) => (
+      <Link to={`/prescriptions/create?key=${render.key}`}>Создать рецепт</Link>
+    ),
   },
 ];
 
@@ -54,7 +57,7 @@ export const MedicinesPage = () => {
   return (
     <Layout>
       <Header />
-      <Content>
+      <Content className={styles.content}>
         <Table dataSource={dataSource} columns={columns} />;
       </Content>
     </Layout>

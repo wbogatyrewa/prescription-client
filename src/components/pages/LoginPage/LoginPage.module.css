@@ -13,3 +13,11 @@
 .login {
   width: 100%;
 }
+
+.texts {
+  text-align: center;
+}
+
+.signup {
+  margin: 16px 0 100px;
+}

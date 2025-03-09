@@ -6,8 +6,15 @@ import { useMemo } from "react";
 import { useAppContext } from "../../../contexts/AppContext/AppContext";
 import { UserOutlined } from "@ant-design/icons";
 import { Link, useNavigate } from "react-router";
+import logo from "../../../assets/logo.svg";
 
-export const Header = () => {
+type HeaderProps = {
+  defaultSelectedKeys?: string[];
+};
+
+const DEFAULT_SELECTED_KEYS = ["1"];
+
+export const Header = ({ defaultSelectedKeys }: HeaderProps) => {
   const { userData, setUserData } = useAppContext();
   const { role } = userData || {};
 
@@ -31,11 +38,11 @@ export const Header = () => {
 
   return (
     <AntdHeader className={styles.header}>
-      <div className={styles.logo}>Лого</div>
+      <img src={logo} />
       <Menu
         className={styles.menu}
         mode="horizontal"
-        defaultSelectedKeys={["1"]}
+        defaultSelectedKeys={defaultSelectedKeys || DEFAULT_SELECTED_KEYS}
         items={items}
       />
       <Button type="text" className={styles.avatar}>

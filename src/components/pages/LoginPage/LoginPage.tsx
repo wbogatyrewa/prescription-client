@@ -5,6 +5,7 @@ import {
 } from "../../../contexts/AppContext/AppContext";
 import styles from "./LoginPage.module.css";
 import { Button, Form, Input, Layout } from "antd";
+import logo from "../../../assets/logo.svg";
 
 const mockUsers: Record<string, UserData> = {
   admin: {
@@ -53,16 +54,17 @@ export const LoginPage = () => {
 
   return (
     <Layout className={styles.loginPage}>
-      {/* <button onClick={() => login(mockUsers.admin)}>Войти как админ</button>
-      <button onClick={() => login(mockUsers.doctor)}>Войти как врач</button>
-      <button onClick={() => login(mockUsers.pharmacist)}>
-        Войти как фармацевт
-      </button>
-      <button onClick={() => login(mockUsers.patient)}>
-        Войти как пациент
-      </button> */}
-
       <Form className={styles.loginForm} autoComplete="off">
+        <div className={styles.texts}>
+          <img src={logo} />
+          <h1>
+            Программная система
+            <br />
+            для учета выдачи
+            <br />
+            рецептурных препаратов
+          </h1>
+        </div>
         <Form.Item<FieldType>
           label="Email"
           name="email"
@@ -70,7 +72,6 @@ export const LoginPage = () => {
         >
           <Input />
         </Form.Item>
-
         <Form.Item<FieldType>
           label="Пароль"
           name="password"
@@ -78,7 +79,6 @@ export const LoginPage = () => {
         >
           <Input.Password />
         </Form.Item>
-
         <Form.Item label={null}>
           <Button
             type="primary"
@@ -116,6 +116,13 @@ export const LoginPage = () => {
           </Button>
         </Form.Item>
       </Form>
+      <Button
+        type="link"
+        className={styles.signup}
+        onClick={() => navigate("/signup")}
+      >
+        Зарегистрироваться
+      </Button>
     </Layout>
   );
 };

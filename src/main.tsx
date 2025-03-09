@@ -4,13 +4,17 @@ import "./index.css";
 import { BrowserRouter } from "react-router";
 import App from "./components/App";
 import { AppProvider } from "./contexts/AppContext/AppProvider";
+import { ConfigProvider } from "antd";
+import ru_RU from "antd/lib/locale/ru_RU";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <BrowserRouter>
-      <AppProvider>
-        <App />
-      </AppProvider>
+      <ConfigProvider locale={ru_RU}>
+        <AppProvider>
+          <App />
+        </AppProvider>
+      </ConfigProvider>
     </BrowserRouter>
   </StrictMode>
 );
