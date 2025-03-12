@@ -4,6 +4,7 @@ import { MedicinesPage } from "./pages/MedicinesPage/MedicinesPage";
 import { useAppContext } from "../contexts/AppContext/AppContext";
 import { useEffect } from "react";
 import { CreatePrescriptionPage } from "./pages/CreatePrescriptionPage/CreatePrescriptionPage";
+import { PrescriptionsPage } from "./pages/PrescriptionsPage/PrescriptionsPage";
 
 function App() {
   const { userData } = useAppContext();
@@ -18,6 +19,7 @@ function App() {
       {/* {!!userData && ( */}
       <>
         <Route path="/medicines" element={<MedicinesPage />} />
+        <Route path="/prescriptions" element={<PrescriptionsPage />} />
         <Route
           path="/prescriptions/create"
           element={<CreatePrescriptionPage />}
