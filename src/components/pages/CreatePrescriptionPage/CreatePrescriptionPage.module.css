@@ -7,3 +7,9 @@
   padding: 24px;
   border-radius: 4px;
 }
+
+.patientWrapper {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}

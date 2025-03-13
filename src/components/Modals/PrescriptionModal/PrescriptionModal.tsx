@@ -87,16 +87,6 @@ const hospitalItems: DescriptionsProps["items"] = [
     label: "Врач",
     children: "Терапевт Сидоров Иван Иванович",
   },
-  {
-    key: "3",
-    label: "СНИЛС",
-    children: "За полную стоимость",
-  },
-  {
-    key: "4",
-    label: "Полис ОМС",
-    children: <Badge color="#52C41A" text="Действующий" />,
-  },
 ];
 
 export const PrescriptionModal = ({

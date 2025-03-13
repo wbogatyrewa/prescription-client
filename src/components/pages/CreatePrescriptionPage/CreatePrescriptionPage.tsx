@@ -2,6 +2,8 @@ import Layout, { Content } from "antd/es/layout/layout";
 import { Header } from "../../organisms/Header/Header";
 import { Button, DatePicker, Form, Input, Select } from "antd";
 import styles from "./CreatePrescriptionPage.module.css";
+import { PatientModal } from "../../Modals/PatientModal/PatientModal";
+import { useState } from "react";
 
 type FieldType = {
   name?: string;
@@ -15,8 +17,17 @@ type FieldType = {
 
 export const CreatePrescriptionPage = () => {
   // получить из квери ключ препарата, если есть, заполнить данные о нем, если нет, показать кнопку для выбора
+
+  const [isOpenPatientModal, setIsOpenPatientModal] = useState(false);
+  const [patientId, setPatientId] = useState("");
+
   return (
     <Layout>
+      <PatientModal
+        isOpen={isOpenPatientModal}
+        setIsOpen={setIsOpenPatientModal}
+        setPatientId={setPatientId}
+      />
       <Header defaultSelectedKeys={["3"]} />
       <Content className={styles.content}>
         <Form className={styles.createForm} autoComplete="off">
@@ -76,12 +87,15 @@ export const CreatePrescriptionPage = () => {
             name="methodOfApplication"
             rules={[{ required: true, message: "Выберите пациента" }]}
           >
-            <Button>Выбрать</Button>
+            <div className={styles.patientWrapper}>
+              {!!patientId && <div>Пациент: {patientId}</div>}
+              <Button onClick={() => setIsOpenPatientModal(true)}>
+                Выбрать
+              </Button>
+            </div>
           </Form.Item>
           <Form.Item label={null}>
-            <Button type="primary" onClick={() => {}} className={styles.login}>
-              Создать
-            </Button>
+            <Button type="primary">Создать</Button>
           </Form.Item>
         </Form>
       </Content>

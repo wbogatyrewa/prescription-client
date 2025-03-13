@@ -91,7 +91,7 @@ export const PrescriptionsPage = () => {
       />
       <Header defaultSelectedKeys={["2"]} />
       <Content className={styles.content}>
-        <Table dataSource={dataSource} columns={columns} />;
+        <Table dataSource={dataSource} columns={columns} />
       </Content>
     </Layout>
   );

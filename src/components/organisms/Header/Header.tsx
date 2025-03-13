@@ -45,13 +45,13 @@ export const Header = ({ defaultSelectedKeys }: HeaderProps) => {
         defaultSelectedKeys={defaultSelectedKeys || DEFAULT_SELECTED_KEYS}
         items={items}
       />
-      <Button type="text" className={styles.avatar}>
+      <Link to="/account" className={styles.avatar}>
         <Avatar
           style={{ backgroundColor: "#1890FF" }}
           icon={<UserOutlined />}
         />
         {userData?.username}
-      </Button>
+      </Link>
       <Button type="primary" className={styles.logoff} onClick={logoff}>
         Выйти
       </Button>

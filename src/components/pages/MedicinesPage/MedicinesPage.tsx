@@ -58,7 +58,7 @@ export const MedicinesPage = () => {
     <Layout>
       <Header />
       <Content className={styles.content}>
-        <Table dataSource={dataSource} columns={columns} />;
+        <Table dataSource={dataSource} columns={columns} />
       </Content>
     </Layout>
   );
