@@ -3,6 +3,8 @@ import { Header } from "../../organisms/Header/Header";
 import { Table } from "antd";
 import styles from "./MedicinesPage.module.css";
 import { Link } from "react-router";
+import { useTableSearch } from "../../../hooks/useTableSearch";
+import { getColumnSearchProps } from "../../../utils/getColumnSearchProps";
 
 const dataSource = [
   {
@@ -23,37 +25,74 @@ const dataSource = [
   },
 ];
 
-const columns = [
-  {
-    title: "Название",
-    dataIndex: "name",
-    key: "name",
-  },
-  {
-    title: "Форма выпуска",
-    dataIndex: "form",
-    key: "form",
-  },
-  {
-    title: "Состав",
-    dataIndex: "composition",
-    key: "composition",
-  },
-  {
-    title: "Дозировка",
-    dataIndex: "dosage",
-    key: "dosage",
-  },
-  {
-    title: "Действия",
-    key: "actions",
-    render: (_, render) => (
-      <Link to={`/prescriptions/create?key=${render.key}`}>Создать рецепт</Link>
-    ),
-  },
-];
-
 export const MedicinesPage = () => {
+  const { searchText, searchedColumn, searchInput, handleSearch, handleReset } =
+    useTableSearch();
+
+  const columns = [
+    {
+      title: "Название",
+      dataIndex: "name",
+      key: "name",
+      ...getColumnSearchProps({
+        searchText,
+        searchedColumn,
+        searchInput,
+        handleSearch,
+        handleReset,
+        dataIndex: "name",
+      }),
+    },
+    {
+      title: "Форма выпуска",
+      dataIndex: "form",
+      key: "form",
+      ...getColumnSearchProps({
+        searchText,
+        searchedColumn,
+        searchInput,
+        handleSearch,
+        handleReset,
+        dataIndex: "form",
+      }),
+    },
+    {
+      title: "Состав",
+      dataIndex: "composition",
+      key: "composition",
+      ...getColumnSearchProps({
+        searchText,
+        searchedColumn,
+        searchInput,
+        handleSearch,
+        handleReset,
+        dataIndex: "composition",
+      }),
+    },
+    {
+      title: "Дозировка",
+      dataIndex: "dosage",
+      key: "dosage",
+      ...getColumnSearchProps({
+        searchText,
+        searchedColumn,
+        searchInput,
+        handleSearch,
+        handleReset,
+        dataIndex: "dosage",
+      }),
+    },
+    {
+      title: "Действия",
+      key: "actions",
+      render: (_, render) => (
+        <Link to={`/prescriptions/create?key=${render.key}`}>
+          Создать рецепт
+        </Link>
+      ),
+    },
+  ];
+
   return (
     <Layout>
       <Header />

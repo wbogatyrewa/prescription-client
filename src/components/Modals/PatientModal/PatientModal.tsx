@@ -1,10 +1,19 @@
-import { Button, Modal, Table } from "antd";
+import { Button, Modal, Table, TableColumnsType } from "antd";
+import { getColumnSearchProps } from "../../../utils/getColumnSearchProps";
+import { useTableSearch } from "../../../hooks/useTableSearch";
 
 type PatientModalProps = {
   isOpen: boolean;
   setIsOpen: (isOpen: boolean) => void;
   setPatientId: (id: string) => void;
 };
+
+interface DataType {
+  key: string;
+  name: string;
+  dateOfBirth: string;
+  SNILS: string;
+}
 
 const dataSource = [
   {
@@ -15,9 +24,9 @@ const dataSource = [
   },
   {
     key: "2",
-    name: "Богатырева Вероника Олеговна",
-    dateOfBirth: "2021-02-05",
-    SNILS: "150-360 078 54",
+    name: "Иванов Иван Иванович",
+    dateOfBirth: "2024-01-08",
+    SNILS: "451-150 123 47",
   },
 ];
 
@@ -26,7 +35,8 @@ export const PatientModal = ({
   setIsOpen,
   setPatientId,
 }: PatientModalProps) => {
-  // при открытии модалки получать с бека данные о пациентах
+  const { searchText, searchedColumn, searchInput, handleSearch, handleReset } =
+    useTableSearch();
 
   const handleOk = () => {
     setIsOpen(false);
@@ -36,21 +46,45 @@ export const PatientModal = ({
     setIsOpen(false);
   };
 
-  const columns = [
+  const columns: TableColumnsType<DataType> = [
     {
       title: "ФИО",
       dataIndex: "name",
       key: "name",
+      ...getColumnSearchProps({
+        searchText,
+        searchedColumn,
+        searchInput,
+        handleSearch,
+        handleReset,
+        dataIndex: "name",
+      }),
     },
     {
       title: "Дата рождения",
       dataIndex: "dateOfBirth",
       key: "dateOfBirth",
+      ...getColumnSearchProps({
+        searchText,
+        searchedColumn,
+        searchInput,
+        handleSearch,
+        handleReset,
+        dataIndex: "dateOfBirth",
+      }),
     },
     {
       title: "СНИЛС",
       dataIndex: "SNILS",
       key: "SNILS",
+      ...getColumnSearchProps({
+        searchText,
+        searchedColumn,
+        searchInput,
+        handleSearch,
+        handleReset,
+        dataIndex: "SNILS",
+      }),
     },
     {
       title: "Действия",
@@ -77,7 +111,6 @@ export const PatientModal = ({
       onCancel={handleCancel}
       footer=""
     >
-      Блок с поиском
       <Table dataSource={dataSource} columns={columns} />
     </Modal>
   );

@@ -4,6 +4,8 @@ import { Badge, Button, Table } from "antd";
 import styles from "./PrescriptionsPage.module.css";
 import { useState } from "react";
 import { PrescriptionModal } from "../../Modals/PrescriptionModal/PrescriptionModal";
+import { useTableSearch } from "../../../hooks/useTableSearch";
+import { getColumnSearchProps } from "../../../utils/getColumnSearchProps";
 
 const dataSource = [
   {
@@ -17,8 +19,8 @@ const dataSource = [
   {
     key: "2",
     name: "Амоксициллин",
-    patient: "Богатырева Вероника Олеговна",
-    typeOfPrescription: "За полную стоимость",
+    patient: "Иванов Иван Иванович",
+    typeOfPrescription: "Льготный",
     status: "Отпущен",
     createdDate: "2021-02-05 08:28:36",
   },
@@ -27,6 +29,9 @@ const dataSource = [
 export const PrescriptionsPage = () => {
   const [isOpenPrescriptionModal, setIsOpenPrescriptionModal] = useState(false);
   const [currentPrescriptionKey, setCurrentPrescriptionKey] = useState("");
+
+  const { searchText, searchedColumn, searchInput, handleSearch, handleReset } =
+    useTableSearch();
 
   const openPrescriptionModal = (prescriptionKey: string) => {
     setCurrentPrescriptionKey(prescriptionKey);
@@ -38,16 +43,44 @@ export const PrescriptionsPage = () => {
       title: "Название препарата",
       dataIndex: "name",
       key: "name",
+      ...getColumnSearchProps({
+        searchText,
+        searchedColumn,
+        searchInput,
+        handleSearch,
+        handleReset,
+        dataIndex: "name",
+      }),
     },
     {
       title: "ФИО пациента",
       dataIndex: "patient",
       key: "patient",
+      ...getColumnSearchProps({
+        searchText,
+        searchedColumn,
+        searchInput,
+        handleSearch,
+        handleReset,
+        dataIndex: "patient",
+      }),
     },
     {
       title: "Тип рецепта",
       dataIndex: "typeOfPrescription",
       key: "typeOfPrescription",
+      filters: [
+        {
+          text: "За полную стоимость",
+          value: "За полную стоимость",
+        },
+        {
+          text: "Льготный",
+          value: "Льготный",
+        },
+      ],
+      onFilter: (value, record) =>
+        record.typeOfPrescription.startsWith(value as string),
     },
     {
       title: "Статус",
@@ -65,6 +98,21 @@ export const PrescriptionsPage = () => {
           text={render.status}
         />
       ),
+      filters: [
+        {
+          text: "Отпущен",
+          value: "Отпущен",
+        },
+        {
+          text: "Действующий",
+          value: "Действующий",
+        },
+        {
+          text: "Просрочен",
+          value: "Просрочен",
+        },
+      ],
+      onFilter: (value, record) => record.status.startsWith(value as string),
     },
     {
       title: "Дата создания",
