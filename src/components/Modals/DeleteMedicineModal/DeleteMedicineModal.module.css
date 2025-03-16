@@ -1,0 +1,9 @@
+.titleWrapper {
+  display: flex;
+  gap: 8px;
+  color: #faad14;
+}
+
+.title {
+  color: black;
+}
