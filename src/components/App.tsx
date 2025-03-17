@@ -7,6 +7,9 @@ import { CreatePrescriptionPage } from "./pages/CreatePrescriptionPage/CreatePre
 import { PrescriptionsPage } from "./pages/PrescriptionsPage/PrescriptionsPage";
 import { AccountPage } from "./pages/AccountPage/AccountPage";
 import { SignupPage } from "./pages/SignupPage/SignupPage";
+import { CreateMedicinePage } from "./pages/CreateMedicinePage/CreateMedicinePage";
+import { CreateUserPage } from "./pages/CreateUserPage/CreateUserPage";
+import { UsersPage } from "./pages/UsersPage/UsersPage";
 
 function App() {
   const { userData } = useAppContext();
@@ -24,10 +27,13 @@ function App() {
         <Route path="/account" element={<AccountPage />} />
         <Route path="/medicines" element={<MedicinesPage />} />
         <Route path="/prescriptions" element={<PrescriptionsPage />} />
+        <Route path="/users" element={<UsersPage />} />
         <Route
           path="/prescriptions/create"
           element={<CreatePrescriptionPage />}
         />
+        <Route path="/medicines/create" element={<CreateMedicinePage />} />
+        <Route path="/users/create" element={<CreateUserPage />} />
       </>
       {/* )} */}
       <Route path="*" element={<>Страница не найдена</>} />

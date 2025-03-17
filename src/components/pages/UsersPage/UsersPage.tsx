@@ -1,7 +1,7 @@
 import Layout, { Content } from "antd/es/layout/layout";
 import { Header } from "../../organisms/Header/Header";
 import { Button, Table } from "antd";
-import styles from "./MedicinesPage.module.css";
+import styles from "./UsersPage.module.css";
 import { Link } from "react-router";
 import { useTableSearch } from "../../../hooks/useTableSearch";
 import { getColumnSearchProps } from "../../../utils/getColumnSearchProps";
@@ -29,7 +29,7 @@ const dataSource = [
   },
 ];
 
-export const MedicinesPage = () => {
+export const UsersPage = () => {
   const [isOpenMedicineModal, setIsOpenMedicineModal] = useState(false);
   const [isOpenDeleteMedicineModal, setIsOpenDeleteMedicineModal] =
     useState(false);
