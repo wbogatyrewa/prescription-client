@@ -6,6 +6,9 @@ import { useState } from "react";
 import { PrescriptionModal } from "../../Modals/PrescriptionModal/PrescriptionModal";
 import { useTableSearch } from "../../../hooks/useTableSearch";
 import { getColumnSearchProps } from "../../../utils/getColumnSearchProps";
+import { useAppContext } from "../../../contexts/AppContext/AppContext";
+import { Link } from "react-router";
+import { ConfirmIssueModal } from "../../Modals/ConfirmIssueModal/ConfirmIssueModal";
 
 const dataSource = [
   {
@@ -28,7 +31,10 @@ const dataSource = [
 
 export const PrescriptionsPage = () => {
   const [isOpenPrescriptionModal, setIsOpenPrescriptionModal] = useState(false);
+  const [isOpenConfirmIssueModal, setIsOpenConfirmIssueModal] = useState(false);
   const [currentPrescriptionKey, setCurrentPrescriptionKey] = useState("");
+
+  const { userData } = useAppContext();
 
   const { searchText, searchedColumn, searchInput, handleSearch, handleReset } =
     useTableSearch();
@@ -36,6 +42,11 @@ export const PrescriptionsPage = () => {
   const openPrescriptionModal = (prescriptionKey: string) => {
     setCurrentPrescriptionKey(prescriptionKey);
     setIsOpenPrescriptionModal(true);
+  };
+
+  const openConfirmIssueModal = (prescriptionKey: string) => {
+    setCurrentPrescriptionKey(prescriptionKey);
+    setIsOpenConfirmIssueModal(true);
   };
 
   const columns = [
@@ -122,11 +133,44 @@ export const PrescriptionsPage = () => {
     {
       title: "Действия",
       key: "actions",
-      render: (_, render) => (
-        <Button type="link" onClick={() => openPrescriptionModal(render.key)}>
-          Открыть
-        </Button>
-      ),
+      render: (_, render) => {
+        const buttons = [
+          {
+            link: ``,
+            onClick: () => {
+              openPrescriptionModal(render.key);
+            },
+            label: `Открыть`,
+          },
+        ];
+
+        if (userData) {
+          if (
+            userData.role === "pharmacist" &&
+            render.status === "Действующий"
+          ) {
+            buttons.push({
+              link: ``,
+              onClick: () => {
+                openConfirmIssueModal(render.key);
+              },
+              label: `Отпустить рецептурный препарат`,
+            });
+          }
+        }
+
+        return buttons.map((button, index) =>
+          button.link ? (
+            <Link key={index} to={button.link}>
+              {button.label}
+            </Link>
+          ) : (
+            <Button key={index} type="link" onClick={button.onClick}>
+              {button.label}
+            </Button>
+          )
+        );
+      },
     },
   ];
 
@@ -135,6 +179,11 @@ export const PrescriptionsPage = () => {
       <PrescriptionModal
         isOpen={isOpenPrescriptionModal}
         setIsOpen={setIsOpenPrescriptionModal}
+        prescriptionKey={currentPrescriptionKey}
+      />
+      <ConfirmIssueModal
+        isOpen={isOpenConfirmIssueModal}
+        setIsOpen={setIsOpenConfirmIssueModal}
         prescriptionKey={currentPrescriptionKey}
       />
       <Header defaultSelectedKeys={["2"]} />

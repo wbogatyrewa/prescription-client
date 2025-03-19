@@ -7,33 +7,46 @@ import { useTableSearch } from "../../../hooks/useTableSearch";
 import { getColumnSearchProps } from "../../../utils/getColumnSearchProps";
 import { useAppContext } from "../../../contexts/AppContext/AppContext";
 import { useMemo, useState } from "react";
-import { MedicineModal } from "../../Modals/MedicineModal/MedicineModal";
-import { DeleteMedicineModal } from "../../Modals/DeleteMedicineModal/DeleteMedicineModal";
+import { DeleteUserModal } from "../../Modals/DeleteUserModal/DeleteUserModal";
+import { UserModal } from "../../Modals/UserModal/UserModal";
 
 const dataSource = [
   {
     key: "1",
-    name: "Амоксициллин",
-    form: "Таблетки",
-    composition:
-      "Действующее вещество: амоксициллина тригидрат - 287 мг, 574 мг (в пересчете на амоксициллин - 250 мг, 500 мг).",
-    dosage: "500 мг",
+    FIO: "Богатырева Вероника Олеговна",
+    gender: "Ж",
+    birthDate: "01-01-2001",
+    address: "г. Москва, ул. Ленина, д.7, кв.78",
+    passportNumber: 12345678790,
+    dateOfIssue: "01-01-2001",
+    issuedByWhom: "ГУ МВД",
+    phone: "+78947851046",
+    email: "veronika01-01@mail.ru",
+    userRole: "Врач",
+    organizationName: "ГБУЗ ГП № 19 ДЗМ Филиал № 3 (ГП № 189)",
+    position: "Терапевт",
   },
   {
     key: "2",
-    name: "Амоксициллин",
-    form: "Таблетки",
-    composition:
-      "Действующее вещество: амоксициллина тригидрат - 287 мг, 574 мг (в пересчете на амоксициллин - 250 мг, 500 мг).",
-    dosage: "500 мг",
+    FIO: "Богатырева Вероника Олеговна",
+    gender: "Ж",
+    birthDate: "01-01-2001",
+    address: "г. Москва, ул. Ленина, д.7, кв.78",
+    passportNumber: 12345678790,
+    dateOfIssue: "01-01-2001",
+    issuedByWhom: "ГУ МВД",
+    phone: "+78947851046",
+    email: "veronika01-01@mail.ru",
+    userRole: "Врач",
+    organizationName: "ГБУЗ ГП № 19 ДЗМ Филиал № 3 (ГП № 189)",
+    position: "Терапевт",
   },
 ];
 
 export const UsersPage = () => {
-  const [isOpenMedicineModal, setIsOpenMedicineModal] = useState(false);
-  const [isOpenDeleteMedicineModal, setIsOpenDeleteMedicineModal] =
-    useState(false);
-  const [currentMedicineKey, setCurrentMedicineKey] = useState("");
+  const [isOpenUserModal, setIsOpenUserModal] = useState(false);
+  const [isOpenDeleteUserModal, setIsOpenDeleteUserModal] = useState(false);
+  const [currentUserKey, setCurrentUserKey] = useState("");
 
   const { searchText, searchedColumn, searchInput, handleSearch, handleReset } =
     useTableSearch();
@@ -42,67 +55,179 @@ export const UsersPage = () => {
   const columns = useMemo(
     () => [
       {
-        title: "Название",
-        dataIndex: "name",
-        key: "name",
+        title: "ФИО",
+        dataIndex: "FIO",
+        key: "FIO",
         ...getColumnSearchProps({
           searchText,
           searchedColumn,
           searchInput,
           handleSearch,
           handleReset,
-          dataIndex: "name",
+          dataIndex: "FIO",
         }),
       },
       {
-        title: "Форма выпуска",
-        dataIndex: "form",
-        key: "form",
+        title: "Пол",
+        dataIndex: "gender",
+        key: "gender",
+        filters: [
+          {
+            text: "М",
+            value: "М",
+          },
+          {
+            text: "Ж",
+            value: "Ж",
+          },
+        ],
+        onFilter: (value, record) => record.gender.startsWith(value as string),
+      },
+      {
+        title: "Дата рождения",
+        dataIndex: "birthDate",
+        key: "birthDate",
         ...getColumnSearchProps({
           searchText,
           searchedColumn,
           searchInput,
           handleSearch,
           handleReset,
-          dataIndex: "form",
+          dataIndex: "birthDate",
         }),
       },
       {
-        title: "Состав",
-        dataIndex: "composition",
-        key: "composition",
+        title: "Адрес",
+        dataIndex: "address",
+        key: "address",
         ...getColumnSearchProps({
           searchText,
           searchedColumn,
           searchInput,
           handleSearch,
           handleReset,
-          dataIndex: "composition",
+          dataIndex: "address",
         }),
       },
       {
-        title: "Дозировка",
-        dataIndex: "dosage",
-        key: "dosage",
+        title: "Серия и номер паспорта",
+        dataIndex: "passportNumber",
+        key: "passportNumber",
         ...getColumnSearchProps({
           searchText,
           searchedColumn,
           searchInput,
           handleSearch,
           handleReset,
-          dataIndex: "dosage",
+          dataIndex: "passportNumber",
+        }),
+      },
+      {
+        title: "Дата выдачи паспорта",
+        dataIndex: "dateOfIssue",
+        key: "dateOfIssue",
+        ...getColumnSearchProps({
+          searchText,
+          searchedColumn,
+          searchInput,
+          handleSearch,
+          handleReset,
+          dataIndex: "dateOfIssue",
+        }),
+      },
+      {
+        title: "Кем выдано",
+        dataIndex: "issuedByWhom",
+        key: "issuedByWhom",
+        ...getColumnSearchProps({
+          searchText,
+          searchedColumn,
+          searchInput,
+          handleSearch,
+          handleReset,
+          dataIndex: "issuedByWhom",
+        }),
+      },
+      {
+        title: "Номер телефона",
+        dataIndex: "phone",
+        key: "phone",
+        ...getColumnSearchProps({
+          searchText,
+          searchedColumn,
+          searchInput,
+          handleSearch,
+          handleReset,
+          dataIndex: "phone",
+        }),
+      },
+      {
+        title: "Email",
+        dataIndex: "email",
+        key: "email",
+        ...getColumnSearchProps({
+          searchText,
+          searchedColumn,
+          searchInput,
+          handleSearch,
+          handleReset,
+          dataIndex: "email",
+        }),
+      },
+      {
+        title: "Роль",
+        dataIndex: "userRole",
+        key: "userRole",
+        filters: [
+          {
+            text: "Врач",
+            value: "Врач",
+          },
+          {
+            text: "Фармацевт",
+            value: "Фармацевт",
+          },
+        ],
+        onFilter: (value, record) =>
+          record.userRole.startsWith(value as string),
+      },
+      {
+        title: "Название организации",
+        dataIndex: "organizationName",
+        key: "organizationName",
+        ...getColumnSearchProps({
+          searchText,
+          searchedColumn,
+          searchInput,
+          handleSearch,
+          handleReset,
+          dataIndex: "organizationName",
+        }),
+      },
+      {
+        title: "Специальность",
+        dataIndex: "position",
+        key: "position",
+        ...getColumnSearchProps({
+          searchText,
+          searchedColumn,
+          searchInput,
+          handleSearch,
+          handleReset,
+          dataIndex: "position",
         }),
       },
       {
         title: "Действия",
         key: "actions",
+        fixed: "right",
         render: (_, render) => {
           const buttons = [
             {
               link: ``,
               onClick: () => {
-                setCurrentMedicineKey(render.key);
-                setIsOpenMedicineModal(true);
+                setCurrentUserKey(render.key);
+                setIsOpenUserModal(true);
               },
               label: `Открыть`,
             },
@@ -111,23 +236,17 @@ export const UsersPage = () => {
           if (userData) {
             if (userData.role === "admin") {
               buttons.push({
-                link: `/medicines/create?key=${render.key}`,
+                link: `/users/create?key=${render.key}`,
                 onClick: () => {},
                 label: `Редактировать`,
               });
               buttons.push({
                 link: ``,
                 onClick: () => {
-                  setCurrentMedicineKey(render.key);
-                  setIsOpenDeleteMedicineModal(true);
+                  setCurrentUserKey(render.key);
+                  setIsOpenDeleteUserModal(true);
                 },
                 label: `Удалить`,
-              });
-            } else if (userData.role === "doctor") {
-              buttons.push({
-                link: `/prescriptions/create?key=${render.key}`,
-                onClick: () => {},
-                label: `Создать рецепт`,
               });
             }
           }
@@ -158,19 +277,23 @@ export const UsersPage = () => {
 
   return (
     <Layout>
-      <MedicineModal
-        isOpen={isOpenMedicineModal}
-        setIsOpen={setIsOpenMedicineModal}
-        medicineKey={currentMedicineKey}
+      <UserModal
+        isOpen={isOpenUserModal}
+        setIsOpen={setIsOpenUserModal}
+        userKey={currentUserKey}
       />
-      <DeleteMedicineModal
-        isOpen={isOpenDeleteMedicineModal}
-        setIsOpen={setIsOpenDeleteMedicineModal}
-        medicineKey={currentMedicineKey}
+      <DeleteUserModal
+        isOpen={isOpenDeleteUserModal}
+        setIsOpen={setIsOpenDeleteUserModal}
+        userKey={currentUserKey}
       />
-      <Header />
+      <Header defaultSelectedKeys={["3"]} />
       <Content className={styles.content}>
-        <Table dataSource={dataSource} columns={columns} />
+        <Table
+          dataSource={dataSource}
+          columns={columns}
+          scroll={{ x: "max-content" }}
+        />
       </Content>
     </Layout>
   );

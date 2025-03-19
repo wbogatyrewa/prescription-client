@@ -34,7 +34,7 @@ export const CreateUserPage = () => {
 
   return (
     <Layout>
-      <Header defaultSelectedKeys={["2"]} />
+      <Header defaultSelectedKeys={["4"]} />
       <Content className={styles.content}>
         <Form className={styles.createForm} autoComplete="off">
           <div className={styles.blockTitle}>Личные данные</div>
@@ -93,7 +93,7 @@ export const CreateUserPage = () => {
           >
             <Input />
           </Form.Item>
-          <div className={styles.blockTitle}>Адрес</div>
+          <div className={styles.blockTitle}>Адрес проживания</div>
           <Form.Item<FieldType>
             label="Область"
             name="region"
@@ -129,7 +129,7 @@ export const CreateUserPage = () => {
           >
             <Input />
           </Form.Item>
-          <div className={styles.blockTitle}>Паспорт</div>
+          <div className={styles.blockTitle}>Паспортные данные</div>
           <Form.Item<FieldType>
             label="Серия и номер паспорта"
             name="passportNumber"
@@ -153,7 +153,7 @@ export const CreateUserPage = () => {
           >
             <Input />
           </Form.Item>
-          Контактные данные
+          <div className={styles.blockTitle}>Контактные данные</div>
           <Form.Item<FieldType>
             label="Номер телефона"
             name="phone"
