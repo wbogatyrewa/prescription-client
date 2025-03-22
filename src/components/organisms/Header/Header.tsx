@@ -7,6 +7,7 @@ import { useAppContext } from "../../../contexts/AppContext/AppContext";
 import { UserOutlined } from "@ant-design/icons";
 import { Link, useNavigate } from "react-router";
 import logo from "../../../assets/logo.svg";
+import { removeToken } from "../../../api/auth/token";
 
 type HeaderProps = {
   defaultSelectedKeys?: string[];
@@ -21,6 +22,7 @@ export const Header = ({ defaultSelectedKeys }: HeaderProps) => {
   const navigate = useNavigate();
 
   const logoff = () => {
+    removeToken();
     setUserData(null);
     navigate("/");
   };

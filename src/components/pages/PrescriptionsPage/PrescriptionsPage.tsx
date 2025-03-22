@@ -1,8 +1,8 @@
 import Layout, { Content } from "antd/es/layout/layout";
 import { Header } from "../../organisms/Header/Header";
-import { Badge, Button, Table } from "antd";
+import { Badge, Button, Flex, Input, Table } from "antd";
 import styles from "./PrescriptionsPage.module.css";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { PrescriptionModal } from "../../Modals/PrescriptionModal/PrescriptionModal";
 import { useTableSearch } from "../../../hooks/useTableSearch";
 import { getColumnSearchProps } from "../../../utils/getColumnSearchProps";
@@ -33,6 +33,8 @@ export const PrescriptionsPage = () => {
   const [isOpenPrescriptionModal, setIsOpenPrescriptionModal] = useState(false);
   const [isOpenConfirmIssueModal, setIsOpenConfirmIssueModal] = useState(false);
   const [currentPrescriptionKey, setCurrentPrescriptionKey] = useState("");
+  const [inputPrescriptionKey, setInputPrescriptionKey] = useState<number>();
+  const [data, setData] = useState(dataSource);
 
   const { userData } = useAppContext();
 
@@ -47,6 +49,14 @@ export const PrescriptionsPage = () => {
   const openConfirmIssueModal = (prescriptionKey: string) => {
     setCurrentPrescriptionKey(prescriptionKey);
     setIsOpenConfirmIssueModal(true);
+  };
+
+  const changeSearchInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setInputPrescriptionKey(Number(e.target.value));
+  };
+
+  const searchPrescription = () => {
+    // поиск рецепта по номеру
   };
 
   const columns = [
@@ -174,6 +184,12 @@ export const PrescriptionsPage = () => {
     },
   ];
 
+  useEffect(() => {
+    if (userData?.role === "pharmacist") {
+      setData(data.filter((elem) => elem.status === "Действующий"));
+    }
+  }, [data, userData?.role]);
+
   return (
     <Layout>
       <PrescriptionModal
@@ -188,7 +204,20 @@ export const PrescriptionsPage = () => {
       />
       <Header defaultSelectedKeys={["2"]} />
       <Content className={styles.content}>
-        <Table dataSource={dataSource} columns={columns} />
+        <Flex className={styles.searchWrapper}>
+          <span className={styles.searchLabel}>Номер рецепта:</span>
+          <Input
+            placeholder="Введите номер рецепта"
+            className={styles.searchInput}
+            value={inputPrescriptionKey}
+            onChange={changeSearchInput}
+            type="number"
+          />
+          <Button type="primary" onClick={searchPrescription}>
+            Поиск
+          </Button>
+        </Flex>
+        <Table dataSource={data} columns={columns} />
       </Content>
     </Layout>
   );

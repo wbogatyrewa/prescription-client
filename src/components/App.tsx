@@ -1,4 +1,4 @@
-import { Route, Routes } from "react-router";
+import { Route, Routes, useNavigate } from "react-router";
 import { LoginPage } from "./pages/LoginPage/LoginPage";
 import { MedicinesPage } from "./pages/MedicinesPage/MedicinesPage";
 import { useAppContext } from "../contexts/AppContext/AppContext";
@@ -10,13 +10,38 @@ import { SignupPage } from "./pages/SignupPage/SignupPage";
 import { CreateMedicinePage } from "./pages/CreateMedicinePage/CreateMedicinePage";
 import { CreateUserPage } from "./pages/CreateUserPage/CreateUserPage";
 import { UsersPage } from "./pages/UsersPage/UsersPage";
+import { getToken } from "../api/auth/token";
 
 function App() {
-  const { userData } = useAppContext();
+  const navigate = useNavigate();
+  const { userData, setUserData } = useAppContext();
 
   useEffect(() => {
     console.log(userData);
   }, [userData]);
+
+  useEffect(() => {
+    // const { username, role: userRole, timeStamp } = getToken() || {};
+    const { username, role } = getToken() || {};
+
+    // if (isExpired(timeStamp)) {
+    // navigate("/");
+    // } else {
+    setUserData({
+      id: username || "",
+      username: username || "",
+      email: "string",
+      // @ts-expect-error Type 'string' is not assignable to type 'UserRole'
+      role: role || "patient",
+    });
+
+    if (role !== "patient") {
+      navigate("/medicines");
+    } else {
+      navigate("/prescriptions");
+    }
+    // }
+  }, []);
 
   return (
     <Routes>

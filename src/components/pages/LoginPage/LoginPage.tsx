@@ -6,6 +6,7 @@ import {
 import styles from "./LoginPage.module.css";
 import { Button, Form, Input, Layout } from "antd";
 import logo from "../../../assets/logo.svg";
+import { setToken } from "../../../api/auth/token";
 
 const mockUsers: Record<string, UserData> = {
   admin: {
@@ -44,6 +45,13 @@ export const LoginPage = () => {
   const navigate = useNavigate();
 
   const login = (user: UserData | null) => {
+    setToken({
+      id: user?.username || "",
+      username: user?.username || "",
+      email: user?.email || "",
+      role: user?.role || "patient",
+    });
+
     setUserData(user);
     if (user && user?.role !== "patient") {
       navigate("/medicines");

@@ -5,6 +5,10 @@
       "link": "/medicines"
     },
     {
+      "label": "Рецепты",
+      "link": "/prescriptions"
+    },
+    {
       "label": "Создание рецептурного препарата",
       "link": "/medicines/create"
     },
