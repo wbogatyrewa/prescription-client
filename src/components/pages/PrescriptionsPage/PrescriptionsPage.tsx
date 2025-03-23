@@ -9,6 +9,7 @@ import { getColumnSearchProps } from "../../../utils/getColumnSearchProps";
 import { useAppContext } from "../../../contexts/AppContext/AppContext";
 import { Link } from "react-router";
 import { ConfirmIssueModal } from "../../Modals/ConfirmIssueModal/ConfirmIssueModal";
+import { DownloadOutlined } from "@ant-design/icons";
 
 const dataSource = [
   {
@@ -56,7 +57,7 @@ export const PrescriptionsPage = () => {
   };
 
   const searchPrescription = () => {
-    // поиск рецепта по номеру
+    // поиск рецепта по номеру (запрос на бек)
   };
 
   const columns = [
@@ -186,9 +187,9 @@ export const PrescriptionsPage = () => {
 
   useEffect(() => {
     if (userData?.role === "pharmacist") {
-      setData(data.filter((elem) => elem.status === "Действующий"));
+      setData(data.filter((elem) => elem.status === "Отпущен"));
     }
-  }, [data, userData?.role]);
+  }, []);
 
   return (
     <Layout>
@@ -217,6 +218,15 @@ export const PrescriptionsPage = () => {
             Поиск
           </Button>
         </Flex>
+        {data && data.length > 0 && (
+          <Button
+            type="primary"
+            icon={<DownloadOutlined />}
+            className={styles.downloadButton}
+          >
+            Скачать
+          </Button>
+        )}
         <Table dataSource={data} columns={columns} />
       </Content>
     </Layout>

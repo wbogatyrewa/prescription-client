@@ -14,3 +14,7 @@
 .searchLabel {
   min-width: fit-content;
 }
+
+.downloadButton {
+  margin-bottom: 24px;
+}
