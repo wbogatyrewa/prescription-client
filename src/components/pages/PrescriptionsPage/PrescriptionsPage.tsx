@@ -218,7 +218,7 @@ export const PrescriptionsPage = () => {
             Поиск
           </Button>
         </Flex>
-        {data && data.length > 0 && (
+        {/* {data && data.length > 0 && (
           <Button
             type="primary"
             icon={<DownloadOutlined />}
@@ -226,7 +226,7 @@ export const PrescriptionsPage = () => {
           >
             Скачать
           </Button>
-        )}
+        )} */}
         <Table dataSource={data} columns={columns} />
       </Content>
     </Layout>

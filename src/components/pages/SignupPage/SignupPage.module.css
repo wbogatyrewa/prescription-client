@@ -21,3 +21,13 @@
 .login {
   margin: 16px 0 100px;
 }
+
+.formWrapper {
+  display: flex;
+  gap: 32px;
+  flex-direction: column;
+
+  @media (min-width: 768px) {
+    flex-direction: row;
+  }
+}

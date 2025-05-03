@@ -36,7 +36,7 @@ const mockUsers: Record<string, UserData> = {
 };
 
 type FieldType = {
-  email?: string;
+  phone?: string;
   password?: string;
 };
 
@@ -74,9 +74,9 @@ export const LoginPage = () => {
           </h1>
         </div>
         <Form.Item<FieldType>
-          label="Email"
-          name="email"
-          rules={[{ required: true, message: "Введите email" }]}
+          label="Телефон"
+          name="phone"
+          rules={[{ required: true, message: "Введите номер телефона" }]}
         >
           <Input />
         </Form.Item>
@@ -120,7 +120,7 @@ export const LoginPage = () => {
             onClick={() => login(mockUsers.patient)}
             className={styles.login}
           >
-            Войти как пациент
+            Войти
           </Button>
         </Form.Item>
       </Form>

@@ -33,16 +33,6 @@ const personalItems: DescriptionsProps["items"] = [
     label: "Дата рождения",
     children: "01-01-2001",
   },
-  {
-    key: "6",
-    label: "Роль пользователя",
-    children: "Врач",
-  },
-  {
-    key: "7",
-    label: "Специализация",
-    children: "Терапевт",
-  },
 ];
 
 const addressItems: DescriptionsProps["items"] = [
@@ -53,7 +43,7 @@ const addressItems: DescriptionsProps["items"] = [
   },
   {
     key: "2",
-    label: "Город",
+    label: "Населенный пункт",
     children: "Москва",
   },
   {
@@ -110,6 +100,16 @@ const organizationItems: DescriptionsProps["items"] = [
     label: "Название",
     children: "ГБУЗ «ГП №19 ДЗМ»",
   },
+  {
+    key: "2",
+    label: "Роль пользователя",
+    children: "Врач",
+  },
+  {
+    key: "3",
+    label: "Специализация",
+    children: "Терапевт",
+  },
 ];
 
 export const UserModal = ({ isOpen, setIsOpen, userKey }: UserModalProps) => {
@@ -131,7 +131,7 @@ export const UserModal = ({ isOpen, setIsOpen, userKey }: UserModalProps) => {
     >
       <div className={styles.infoWrapper}>
         <Descriptions
-          title="Личные данные"
+          title="Персональные данные"
           items={personalItems}
           bordered
           column={1}
