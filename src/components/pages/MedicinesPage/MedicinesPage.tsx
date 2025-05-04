@@ -123,12 +123,6 @@ export const MedicinesPage = () => {
                 },
                 label: `Удалить`,
               });
-            } else if (userData.role === "doctor") {
-              buttons.push({
-                link: `/prescriptions/create?key=${render.key}`,
-                onClick: () => {},
-                label: `Создать рецепт`,
-              });
             }
           }
 

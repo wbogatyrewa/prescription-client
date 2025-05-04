@@ -37,7 +37,7 @@ export const CreateUserPage = () => {
       <Header defaultSelectedKeys={["4"]} />
       <Content className={styles.content}>
         <Form className={styles.createForm} autoComplete="off">
-          <div className={styles.blockTitle}>Личные данные</div>
+          <div className={styles.blockTitle}>Персональные данные</div>
           <Form.Item<FieldType>
             label="Фамилия"
             name="firstName"
@@ -86,13 +86,7 @@ export const CreateUserPage = () => {
               <Select.Option value="Фармацевт">Фармацевт</Select.Option>
             </Select>
           </Form.Item>
-          <Form.Item<FieldType>
-            label="Специализация"
-            name="position"
-            rules={[{ required: true, message: "Введите специализацию" }]}
-          >
-            <Input />
-          </Form.Item>
+          
           <div className={styles.blockTitle}>Адрес проживания</div>
           <Form.Item<FieldType>
             label="Область"
@@ -181,6 +175,13 @@ export const CreateUserPage = () => {
             label="Название"
             name="organizationName"
             rules={[{ required: true, message: "Введите название" }]}
+          >
+            <Input />
+          </Form.Item>
+          <Form.Item<FieldType>
+            label="Специализация"
+            name="position"
+            rules={[{ required: true, message: "Введите специализацию" }]}
           >
             <Input />
           </Form.Item>

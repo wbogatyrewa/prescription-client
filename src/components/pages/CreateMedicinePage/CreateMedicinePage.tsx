@@ -9,9 +9,8 @@ type FieldType = {
   count?: number;
   dosage?: number;
   producer?: string;
-  composition?: string;
+  description?: string;
   form?: string;
-  methodOfApplication?: string;
 };
 
 export const CreateMedicinePage = () => {
@@ -57,7 +56,7 @@ export const CreateMedicinePage = () => {
           </Form.Item>
           <Form.Item<FieldType>
             label="Состав"
-            name="composition"
+            name="description"
             rules={[{ required: true, message: "Введите состав" }]}
           >
             <Input />
@@ -66,13 +65,6 @@ export const CreateMedicinePage = () => {
             label="Форма выпуска"
             name="form"
             rules={[{ required: true, message: "Введите форму выпуска" }]}
-          >
-            <Input />
-          </Form.Item>
-          <Form.Item<FieldType>
-            label="Способ применения"
-            name="methodOfApplication"
-            rules={[{ required: true, message: "Введите способ применения" }]}
           >
             <Input />
           </Form.Item>

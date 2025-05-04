@@ -16,10 +16,11 @@ type FieldType = {
 };
 
 export const CreatePrescriptionPage = () => {
-  // получить из квери ключ препарата, если есть, заполнить данные о нем, если нет, показать кнопку для выбора
+  // показать кнопку для выбора лекарства
 
   const [isOpenPatientModal, setIsOpenPatientModal] = useState(false);
   const [patientId, setPatientId] = useState("");
+  const [medicineId, setMedicineId] = useState("");
 
   return (
     <Layout>
@@ -31,28 +32,17 @@ export const CreatePrescriptionPage = () => {
       <Header defaultSelectedKeys={["3"]} />
       <Content className={styles.content}>
         <Form className={styles.createForm} autoComplete="off">
-          <Form.Item<FieldType>
-            label="Название лекарственного препарата"
-            name="name"
-            rules={[
-              { required: true, message: "Выберите лекарственный препарат" },
-            ]}
+        <Form.Item<FieldType>
+            label="Лекарственный препарат"
+            name="medicine"
+            rules={[{ required: true, message: "Выберите лекарственный препарат" }]}
           >
-            <Input />
-          </Form.Item>
-          <Form.Item<FieldType>
-            label="Количество"
-            name="count"
-            rules={[{ required: true, message: "Введите количество" }]}
-          >
-            <Input />
-          </Form.Item>
-          <Form.Item<FieldType>
-            label="Дозировка"
-            name="dosage"
-            rules={[{ required: true, message: "Введите дозировку" }]}
-          >
-            <Input />
+            <div className={styles.patientWrapper}>
+              {!!medicineId && <div>Лекарственный препарат: {medicineId}</div>}
+              <Button onClick={() => setIsOpenPatientModal(true)}>
+                Выбрать
+              </Button>
+            </div>
           </Form.Item>
           <Form.Item<FieldType>
             label="Срок действия рецепта"
@@ -84,7 +74,7 @@ export const CreatePrescriptionPage = () => {
           </Form.Item>
           <Form.Item<FieldType>
             label="Пациент"
-            name="methodOfApplication"
+            name="patient"
             rules={[{ required: true, message: "Выберите пациента" }]}
           >
             <div className={styles.patientWrapper}>

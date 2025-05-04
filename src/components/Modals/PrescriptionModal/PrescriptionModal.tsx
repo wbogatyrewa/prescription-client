@@ -28,23 +28,18 @@ const medicineItems: DescriptionsProps["items"] = [
     label: "Дозировка",
     children: "500 мг",
   },
-  {
-    key: "5",
-    label: "Способ применения",
-    children: "По 1 таблетке 2-3 раза в сутки после еды.",
-  },
 ];
 
 const prescriptionItems: DescriptionsProps["items"] = [
   {
     key: "1",
     label: "Дата создания",
-    children: "2021-02-05 08:28:36",
+    children: "2025-03-05 08:28:36",
   },
   {
     key: "2",
     label: "Дата истечения срока действия",
-    children: "2021-03-05 08:28:36",
+    children: "2025-04-05 08:28:36",
   },
   {
     key: "3",
@@ -54,7 +49,12 @@ const prescriptionItems: DescriptionsProps["items"] = [
   {
     key: "4",
     label: "Статус",
-    children: <Badge color="#52C41A" text="Действующий" />,
+    children: <Badge color="#52C41A" text="Создан" />,
+  },
+  {
+    key: "5",
+    label: "Способ применения",
+    children: "По 1 таблетке 2-3 раза в сутки после еды.",
   },
 ];
 
@@ -71,8 +71,8 @@ const patientItems: DescriptionsProps["items"] = [
   },
   {
     key: "3",
-    label: "СНИЛС",
-    children: "150-360 789 03",
+    label: "Серия и номер паспорта",
+    children: "1234567890",
   },
 ];
 
