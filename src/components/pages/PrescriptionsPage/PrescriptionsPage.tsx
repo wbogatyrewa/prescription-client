@@ -17,17 +17,33 @@ const dataSource = [
     name: "Амоксициллин",
     patient: "Богатырева Вероника Олеговна",
     typeOfPrescription: "За полную стоимость",
-    status: "Действующий",
-    createdDate: "2021-02-05 08:28:36",
+    status: "Создан",
+    createdDate: "2025-03-05 08:28:36",
   },
-  {
-    key: "2",
-    name: "Амоксициллин",
-    patient: "Иванов Иван Иванович",
-    typeOfPrescription: "Льготный",
-    status: "Отпущен",
-    createdDate: "2021-02-05 08:28:36",
-  },
+  // {
+  //   key: "2",
+  //   name: "Амоксициллин",
+  //   patient: "Богатырева Вероника Олеговна",
+  //   typeOfPrescription: "Льготный",
+  //   status: "Просрочен",
+  //   createdDate: "2025-03-04 10:20:42",
+  // },
+  // {
+  //   key: "3",
+  //   name: "Амоксициллин",
+  //   patient: "Богатырева Вероника Олеговна",
+  //   typeOfPrescription: "За полную стоимость",
+  //   status: "Выдан",
+  //   createdDate: "2025-03-03 16:08:12",
+  // },
+  // {
+  //   key: "4",
+  //   name: "Амоксициллин",
+  //   patient: "Иванов Иван Иванович",
+  //   typeOfPrescription: "Льготный",
+  //   status: "Выдан",
+  //   createdDate: "2025-03-03 16:16:07",
+  // },
 ];
 
 export const PrescriptionsPage = () => {
@@ -111,7 +127,7 @@ export const PrescriptionsPage = () => {
       render: (_, render) => (
         <Badge
           color={
-            render.status === "Действующий"
+            render.status === "Создан"
               ? "#52C41A"
               : render.status === "Просрочен"
               ? "#FF4D4F"
@@ -122,16 +138,16 @@ export const PrescriptionsPage = () => {
       ),
       filters: [
         {
-          text: "Отпущен",
-          value: "Отпущен",
-        },
-        {
-          text: "Действующий",
-          value: "Действующий",
+          text: "Создан",
+          value: "Создан",
         },
         {
           text: "Просрочен",
           value: "Просрочен",
+        },
+        {
+          text: "Выдан",
+          value: "Выдан",
         },
       ],
       onFilter: (value, record) => record.status.startsWith(value as string),
@@ -158,14 +174,14 @@ export const PrescriptionsPage = () => {
         if (userData) {
           if (
             userData.role === "pharmacist" &&
-            render.status === "Действующий"
+            render.status === "Создан"
           ) {
             buttons.push({
               link: ``,
               onClick: () => {
                 openConfirmIssueModal(render.key);
               },
-              label: `Отпустить рецептурный препарат`,
+              label: `Выдать`,
             });
           }
         }
@@ -185,11 +201,11 @@ export const PrescriptionsPage = () => {
     },
   ];
 
-  useEffect(() => {
-    if (userData?.role === "pharmacist") {
-      setData(data.filter((elem) => elem.status === "Отпущен"));
-    }
-  }, []);
+  // useEffect(() => {
+  //   if (userData?.role === "pharmacist") {
+  //     setData(data.filter((elem) => elem.status === "Выдан"));
+  //   }
+  // }, []);
 
   return (
     <Layout>
@@ -218,7 +234,7 @@ export const PrescriptionsPage = () => {
             Поиск
           </Button>
         </Flex>
-        {/* {data && data.length > 0 && (
+        {data && data.length > 0 && (
           <Button
             type="primary"
             icon={<DownloadOutlined />}
@@ -226,7 +242,7 @@ export const PrescriptionsPage = () => {
           >
             Скачать
           </Button>
-        )} */}
+        )}
         <Table dataSource={data} columns={columns} />
       </Content>
     </Layout>

@@ -28,7 +28,7 @@ export const ConfirmIssueModal = ({
         <div className={styles.titleWrapper}>
           <ExclamationCircleFilled />
           <span className={styles.title}>
-            Вы уверены, что хотите отпустить <br />
+            Вы уверены, что хотите выдать <br />
             рецептурный препарат?
           </span>
         </div>
