@@ -20,30 +20,30 @@ const dataSource = [
     status: "Создан",
     createdDate: "2025-03-05 08:28:36",
   },
-  // {
-  //   key: "2",
-  //   name: "Амоксициллин",
-  //   patient: "Богатырева Вероника Олеговна",
-  //   typeOfPrescription: "Льготный",
-  //   status: "Просрочен",
-  //   createdDate: "2025-03-04 10:20:42",
-  // },
-  // {
-  //   key: "3",
-  //   name: "Амоксициллин",
-  //   patient: "Богатырева Вероника Олеговна",
-  //   typeOfPrescription: "За полную стоимость",
-  //   status: "Выдан",
-  //   createdDate: "2025-03-03 16:08:12",
-  // },
-  // {
-  //   key: "4",
-  //   name: "Амоксициллин",
-  //   patient: "Иванов Иван Иванович",
-  //   typeOfPrescription: "Льготный",
-  //   status: "Выдан",
-  //   createdDate: "2025-03-03 16:16:07",
-  // },
+  {
+    key: "2",
+    name: "Амоксициллин",
+    patient: "Богатырева Вероника Олеговна",
+    typeOfPrescription: "Льготный",
+    status: "Просрочен",
+    createdDate: "2025-03-04 10:20:42",
+  },
+  {
+    key: "3",
+    name: "Амоксициллин",
+    patient: "Богатырева Вероника Олеговна",
+    typeOfPrescription: "За полную стоимость",
+    status: "Выдан",
+    createdDate: "2025-03-03 16:08:12",
+  },
+  {
+    key: "4",
+    name: "Амоксициллин",
+    patient: "Иванов Иван Иванович",
+    typeOfPrescription: "Льготный",
+    status: "Выдан",
+    createdDate: "2025-03-03 16:16:07",
+  },
 ];
 
 export const PrescriptionsPage = () => {
@@ -123,6 +123,7 @@ export const PrescriptionsPage = () => {
     {
       title: "Статус",
       dataIndex: "status",
+      width: "150px",
       key: "status",
       render: (_, render) => (
         <Badge

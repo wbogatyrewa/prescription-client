@@ -4,15 +4,17 @@ import { Button, DatePicker, Form, Input, Select } from "antd";
 import styles from "./CreatePrescriptionPage.module.css";
 import { PatientModal } from "../../Modals/PatientModal/PatientModal";
 import { useState } from "react";
+import { MedicinesModal } from "../../Modals/MedicinesModal/MedicinesModal";
 
 type FieldType = {
   name?: string;
+  medicine?: string;
   count?: number;
   dosage?: number;
   expiredDate?: string;
   typeOfPrescription?: "Льготный" | "За полную стоимость";
   methodOfApplication?: string;
-  patientId?: string;
+  patient?: string;
 };
 
 export const CreatePrescriptionPage = () => {
@@ -29,20 +31,34 @@ export const CreatePrescriptionPage = () => {
         setIsOpen={setIsOpenPatientModal}
         setPatientId={setPatientId}
       />
+      <MedicinesModal
+        isOpen={isOpenPatientModal}
+        setIsOpen={setIsOpenPatientModal}
+        setMedicineId={setMedicineId}
+      />
       <Header defaultSelectedKeys={["3"]} />
       <Content className={styles.content}>
         <Form className={styles.createForm} autoComplete="off">
-        <Form.Item<FieldType>
+          <Form.Item<FieldType>
             label="Лекарственный препарат"
             name="medicine"
-            rules={[{ required: true, message: "Выберите лекарственный препарат" }]}
+            rules={[
+              { required: true, message: "Выберите лекарственный препарат" },
+            ]}
           >
             <div className={styles.patientWrapper}>
-              {!!medicineId && <div>Лекарственный препарат: {medicineId}</div>}
               <Button onClick={() => setIsOpenPatientModal(true)}>
                 Выбрать
               </Button>
             </div>
+            {!!medicineId && (
+              <div>
+                <p>Название: Амоксициллин</p>
+                <p>Форма выпуска: Таблетки</p>
+                <p>Дозировка: 500 мг</p>
+                <p>Количество: 20 шт</p>
+              </div>
+            )}
           </Form.Item>
           <Form.Item<FieldType>
             label="Срок действия рецепта"
@@ -78,11 +94,17 @@ export const CreatePrescriptionPage = () => {
             rules={[{ required: true, message: "Выберите пациента" }]}
           >
             <div className={styles.patientWrapper}>
-              {!!patientId && <div>Пациент: {patientId}</div>}
               <Button onClick={() => setIsOpenPatientModal(true)}>
                 Выбрать
               </Button>
             </div>
+            {!patientId && (
+              <div>
+                <p>ФИО: Богатырева Вероника Олеговна</p>
+                <p>Дата рождения: 22.09.2001</p>
+                <p>Серия и номер паспорта: 1234567890</p>
+              </div>
+            )}
           </Form.Item>
           <Form.Item label={null}>
             <Button type="primary">Создать</Button>
