@@ -21,3 +21,10 @@
 .signup {
   margin: 16px 0 100px;
 }
+
+.error {
+  display: block;
+  color: #ff4d4f;
+  font-size: 14px;
+  text-align: center;
+}

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import Layout, { Content } from "antd/es/layout/layout";
 import { Header } from "../../organisms/Header/Header";
 import { Button, Table } from "antd";
@@ -10,25 +11,6 @@ import { useMemo, useState } from "react";
 import { MedicineModal } from "../../Modals/MedicineModal/MedicineModal";
 import { DeleteMedicineModal } from "../../Modals/DeleteMedicineModal/DeleteMedicineModal";
 
-const dataSource = [
-  {
-    key: "1",
-    name: "Амоксициллин",
-    form: "Таблетки",
-    composition:
-      "Действующее вещество: амоксициллина тригидрат - 287 мг, 574 мг (в пересчете на амоксициллин - 250 мг, 500 мг).",
-    dosage: "500 мг",
-  },
-  {
-    key: "2",
-    name: "Амоксициллин",
-    form: "Таблетки",
-    composition:
-      "Действующее вещество: амоксициллина тригидрат - 287 мг, 574 мг (в пересчете на амоксициллин - 250 мг, 500 мг).",
-    dosage: "500 мг",
-  },
-];
-
 export const MedicinesPage = () => {
   const [isOpenMedicineModal, setIsOpenMedicineModal] = useState(false);
   const [isOpenDeleteMedicineModal, setIsOpenDeleteMedicineModal] =
@@ -37,7 +19,8 @@ export const MedicinesPage = () => {
 
   const { searchText, searchedColumn, searchInput, handleSearch, handleReset } =
     useTableSearch();
-  const { userData } = useAppContext();
+  const { userData, medicines } = useAppContext();
+  const { user_role } = userData || {}
 
   const columns = useMemo(
     () => [
@@ -69,15 +52,15 @@ export const MedicinesPage = () => {
       },
       {
         title: "Состав",
-        dataIndex: "composition",
-        key: "composition",
+        dataIndex: "description",
+        key: "description",
         ...getColumnSearchProps({
           searchText,
           searchedColumn,
           searchInput,
           handleSearch,
           handleReset,
-          dataIndex: "composition",
+          dataIndex: "description",
         }),
       },
       {
@@ -96,7 +79,7 @@ export const MedicinesPage = () => {
       {
         title: "Действия",
         key: "actions",
-        render: (_, render) => {
+        render: (_: any, render: any) => {
           const buttons = [
             {
               link: ``,
@@ -108,22 +91,20 @@ export const MedicinesPage = () => {
             },
           ];
 
-          if (userData) {
-            if (userData.role === "admin") {
-              buttons.push({
-                link: `/medicines/create?key=${render.key}`,
-                onClick: () => {},
-                label: `Редактировать`,
-              });
-              buttons.push({
-                link: ``,
-                onClick: () => {
-                  setCurrentMedicineKey(render.key);
-                  setIsOpenDeleteMedicineModal(true);
-                },
-                label: `Удалить`,
-              });
-            }
+          if (user_role === "admin") {
+            buttons.push({
+              link: `/medicines/create?key=${render.key}`,
+              onClick: () => { },
+              label: `Редактировать`,
+            });
+            buttons.push({
+              link: ``,
+              onClick: () => {
+                setCurrentMedicineKey(render.key);
+                setIsOpenDeleteMedicineModal(true);
+              },
+              label: `Удалить`,
+            });
           }
 
           return buttons.map((button, index) =>
@@ -140,14 +121,7 @@ export const MedicinesPage = () => {
         },
       },
     ],
-    [
-      handleReset,
-      handleSearch,
-      searchInput,
-      searchText,
-      searchedColumn,
-      userData,
-    ]
+    [handleReset, handleSearch, searchInput, searchText, searchedColumn, user_role]
   );
 
   return (
@@ -164,7 +138,7 @@ export const MedicinesPage = () => {
       />
       <Header />
       <Content className={styles.content}>
-        <Table dataSource={dataSource} columns={columns} />
+        <Table dataSource={medicines} columns={columns} />
       </Content>
     </Layout>
   );

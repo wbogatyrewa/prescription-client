@@ -21,6 +21,7 @@ export const CreatePrescriptionPage = () => {
   // показать кнопку для выбора лекарства
 
   const [isOpenPatientModal, setIsOpenPatientModal] = useState(false);
+  const [isOpenMedicinesModal, setIsOpenMedicinesModal] = useState(false);
   const [patientId, setPatientId] = useState("");
   const [medicineId, setMedicineId] = useState("");
 
@@ -32,8 +33,8 @@ export const CreatePrescriptionPage = () => {
         setPatientId={setPatientId}
       />
       <MedicinesModal
-        isOpen={isOpenPatientModal}
-        setIsOpen={setIsOpenPatientModal}
+        isOpen={isOpenMedicinesModal}
+        setIsOpen={setIsOpenMedicinesModal}
         setMedicineId={setMedicineId}
       />
       <Header defaultSelectedKeys={["3"]} />
@@ -47,7 +48,7 @@ export const CreatePrescriptionPage = () => {
             ]}
           >
             <div className={styles.patientWrapper}>
-              <Button onClick={() => setIsOpenPatientModal(true)}>
+              <Button onClick={() => setIsOpenMedicinesModal(true)}>
                 Выбрать
               </Button>
             </div>

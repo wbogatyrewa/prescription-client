@@ -86,7 +86,7 @@ export const CreateUserPage = () => {
               <Select.Option value="Фармацевт">Фармацевт</Select.Option>
             </Select>
           </Form.Item>
-          
+
           <div className={styles.blockTitle}>Адрес проживания</div>
           <Form.Item<FieldType>
             label="Область"

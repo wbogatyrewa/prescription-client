@@ -10,50 +10,17 @@ import { useAppContext } from "../../../contexts/AppContext/AppContext";
 import { Link } from "react-router";
 import { ConfirmIssueModal } from "../../Modals/ConfirmIssueModal/ConfirmIssueModal";
 import { DownloadOutlined } from "@ant-design/icons";
-
-const dataSource = [
-  {
-    key: "1",
-    name: "Амоксициллин",
-    patient: "Богатырева Вероника Олеговна",
-    typeOfPrescription: "За полную стоимость",
-    status: "Создан",
-    createdDate: "2025-03-05 08:28:36",
-  },
-  {
-    key: "2",
-    name: "Амоксициллин",
-    patient: "Богатырева Вероника Олеговна",
-    typeOfPrescription: "Льготный",
-    status: "Просрочен",
-    createdDate: "2025-03-04 10:20:42",
-  },
-  {
-    key: "3",
-    name: "Амоксициллин",
-    patient: "Богатырева Вероника Олеговна",
-    typeOfPrescription: "За полную стоимость",
-    status: "Выдан",
-    createdDate: "2025-03-03 16:08:12",
-  },
-  {
-    key: "4",
-    name: "Амоксициллин",
-    patient: "Иванов Иван Иванович",
-    typeOfPrescription: "Льготный",
-    status: "Выдан",
-    createdDate: "2025-03-03 16:16:07",
-  },
-];
+import getMedicines from "../../../api/medicines/getMedicines";
 
 export const PrescriptionsPage = () => {
   const [isOpenPrescriptionModal, setIsOpenPrescriptionModal] = useState(false);
   const [isOpenConfirmIssueModal, setIsOpenConfirmIssueModal] = useState(false);
   const [currentPrescriptionKey, setCurrentPrescriptionKey] = useState("");
   const [inputPrescriptionKey, setInputPrescriptionKey] = useState<number>();
-  const [data, setData] = useState(dataSource);
+  const [data, setData] = useState();
 
   const { userData } = useAppContext();
+  const { user_role } = userData || {};
 
   const { searchText, searchedColumn, searchInput, handleSearch, handleReset } =
     useTableSearch();
@@ -131,8 +98,8 @@ export const PrescriptionsPage = () => {
             render.status === "Создан"
               ? "#52C41A"
               : render.status === "Просрочен"
-              ? "#FF4D4F"
-              : "#D9D9D9"
+                ? "#FF4D4F"
+                : "#D9D9D9"
           }
           text={render.status}
         />
@@ -174,7 +141,7 @@ export const PrescriptionsPage = () => {
 
         if (userData) {
           if (
-            userData.role === "pharmacist" &&
+            user_role === "pharmacist" &&
             render.status === "Создан"
           ) {
             buttons.push({
@@ -202,11 +169,30 @@ export const PrescriptionsPage = () => {
     },
   ];
 
-  // useEffect(() => {
-  //   if (userData?.role === "pharmacist") {
-  //     setData(data.filter((elem) => elem.status === "Выдан"));
-  //   }
-  // }, []);
+  useEffect(() => {
+    // getMedicines().then((response) => {
+    //   if (!response.ok) {
+    //     throw "";
+    //   }
+    //   return response;
+    // })
+    //   .then((response) => response.json())
+    //   .then((data) => {
+    //     if (data && data.length > 0) {
+    //       // 
+    //     } else {
+    //       // setError(ERROR_TEXT);
+    //     }
+    //   })
+    //   .catch((e) => {
+    //     // setError(ERROR_TEXT);
+    //     console.error(e)
+    //   });
+
+    // if (user_role === "pharmacist") {
+    //   setData(data.filter((elem) => elem.status === "Выдан"));
+    // }
+  }, []);
 
   return (
     <Layout>
@@ -220,7 +206,7 @@ export const PrescriptionsPage = () => {
         setIsOpen={setIsOpenConfirmIssueModal}
         prescriptionKey={currentPrescriptionKey}
       />
-      <Header defaultSelectedKeys={["2"]} />
+      <Header defaultSelectedKeys={user_role === "patient" ? ["1"] : ["2"]} />
       <Content className={styles.content}>
         <Flex className={styles.searchWrapper}>
           <span className={styles.searchLabel}>Номер рецепта:</span>

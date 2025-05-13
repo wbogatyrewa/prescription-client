@@ -1,6 +1,9 @@
-import { Button, Modal, Table, TableColumnsType } from "antd";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { Button, Modal, Table } from "antd";
 import { getColumnSearchProps } from "../../../utils/getColumnSearchProps";
 import { useTableSearch } from "../../../hooks/useTableSearch";
+import { useAppContext } from "../../../contexts/AppContext/AppContext";
+import { useMemo } from "react";
 
 type MedicinesModalProps = {
   isOpen: boolean;
@@ -8,33 +11,12 @@ type MedicinesModalProps = {
   setMedicineId: (id: string) => void;
 };
 
-interface DataType {
-  key: string;
-  name: string;
-  dateOfBirth: string;
-  SNILS: string;
-}
-
-const dataSource = [
-  {
-    key: "1",
-    name: "Богатырева Вероника Олеговна",
-    dateOfBirth: "2021-02-05",
-    SNILS: "150-360 078 54",
-  },
-  {
-    key: "2",
-    name: "Иванов Иван Иванович",
-    dateOfBirth: "2024-01-08",
-    SNILS: "451-150 123 47",
-  },
-];
-
 export const MedicinesModal = ({
   isOpen,
   setIsOpen,
   setMedicineId,
 }: MedicinesModalProps) => {
+  const { medicines } = useAppContext();
   const { searchText, searchedColumn, searchInput, handleSearch, handleReset } =
     useTableSearch();
 
@@ -46,72 +28,86 @@ export const MedicinesModal = ({
     setIsOpen(false);
   };
 
-  const columns: TableColumnsType<DataType> = [
-    {
-      title: "ФИО",
-      dataIndex: "name",
-      key: "name",
-      ...getColumnSearchProps({
-        searchText,
-        searchedColumn,
-        searchInput,
-        handleSearch,
-        handleReset,
+  const columns = useMemo(
+    () => [
+      {
+        title: "Название",
         dataIndex: "name",
-      }),
-    },
-    {
-      title: "Дата рождения",
-      dataIndex: "dateOfBirth",
-      key: "dateOfBirth",
-      ...getColumnSearchProps({
-        searchText,
-        searchedColumn,
-        searchInput,
-        handleSearch,
-        handleReset,
-        dataIndex: "dateOfBirth",
-      }),
-    },
-    {
-      title: "СНИЛС",
-      dataIndex: "SNILS",
-      key: "SNILS",
-      ...getColumnSearchProps({
-        searchText,
-        searchedColumn,
-        searchInput,
-        handleSearch,
-        handleReset,
-        dataIndex: "SNILS",
-      }),
-    },
-    {
-      title: "Действия",
-      key: "actions",
-      render: (_, render) => (
-        <Button
-          type="default"
-          onClick={() => {
-            setMedicineId(render.key);
+        key: "name",
+        ...getColumnSearchProps({
+          searchText,
+          searchedColumn,
+          searchInput,
+          handleSearch,
+          handleReset,
+          dataIndex: "name",
+        }),
+      },
+      {
+        title: "Форма выпуска",
+        dataIndex: "form",
+        key: "form",
+        ...getColumnSearchProps({
+          searchText,
+          searchedColumn,
+          searchInput,
+          handleSearch,
+          handleReset,
+          dataIndex: "form",
+        }),
+      },
+      {
+        title: "Количество",
+        dataIndex: "count",
+        key: "count",
+        ...getColumnSearchProps({
+          searchText,
+          searchedColumn,
+          searchInput,
+          handleSearch,
+          handleReset,
+          dataIndex: "count",
+        }),
+      },
+      {
+        title: "Дозировка",
+        dataIndex: "dosage",
+        key: "dosage",
+        ...getColumnSearchProps({
+          searchText,
+          searchedColumn,
+          searchInput,
+          handleSearch,
+          handleReset,
+          dataIndex: "dosage",
+        }),
+      },
+      {
+        title: "Действия",
+        key: "actions",
+        render: (_: any, render: any) => {
+          return <Button onClick={() => {
+            setMedicineId(render.uuid);
             setIsOpen(false);
-          }}
-        >
-          Выбрать
-        </Button>
-      ),
-    },
-  ];
+          }}>
+            Выбрать
+          </Button>
+        },
+      },
+    ],
+    [handleReset, handleSearch, searchInput, searchText, searchedColumn, setIsOpen, setMedicineId]
+  );
 
   return (
     <Modal
-      title={`Выбор пациента`}
+      title={`Выбор рецептурного препарата`}
       open={isOpen}
       onOk={handleOk}
       onCancel={handleCancel}
       footer=""
+      width="700px"
     >
-      <Table dataSource={dataSource} columns={columns} />
+      <Table dataSource={medicines} columns={columns} scroll={{ x: "max-content" }} />
     </Modal>
   );
 };

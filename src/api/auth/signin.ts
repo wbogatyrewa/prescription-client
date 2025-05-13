@@ -1,41 +1,22 @@
 import { domain } from "../address";
-import { setToken } from "./token";
+import { getSHA256Hash } from "boring-webcrypto-sha256";
 
-async function signin(username: string, password: string) {
-  try {
-    const url: string = `${domain}/login`;
-    const body = {
-      username: username,
-      password: password,
-    };
-    const response: Response = await fetch(url, {
-      method: "POST",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(body),
-    });
+async function signin(phone: string, password: string) {
+  const secret = `${phone}${password}`;
+  const hash = await getSHA256Hash(secret);
 
-    const res = await response.json();
-    if (await response.ok) {
-      setToken({
-        // access_token: res.access,
-        // refresh_token: res.refresh,
-        // role: res.permit || "",
-        // username: res.fullname || "",
-        // timeStamp: new Date().getTime(),
-        id: res?.username || "",
-        username: res?.username || "",
-        email: res?.email || "",
-        role: res?.userRole || "patient",
-      });
-      return res;
-    }
-    return null;
-  } catch (error) {
-    console.log(error);
-  }
+  console.log(hash);
+
+  const url: string = `${domain}/user-login?password-hash=${hash}`;
+  const response: Response = await fetch(url, {
+    method: "GET",
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+    },
+  });
+
+  return response;
 }
 
 export default signin;

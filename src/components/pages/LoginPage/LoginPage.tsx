@@ -1,68 +1,62 @@
 import { useNavigate } from "react-router";
-import {
-  useAppContext,
-  UserData,
-} from "../../../contexts/AppContext/AppContext";
+import { useAppContext } from "../../../contexts/AppContext/AppContext";
 import styles from "./LoginPage.module.css";
-import { Button, Form, Input, Layout } from "antd";
+import { Button, Form, FormProps, Input, Layout } from "antd";
 import logo from "../../../assets/logo.svg";
+import { useCallback, useState } from "react";
+import signin from "../../../api/auth/signin";
 import { setToken } from "../../../api/auth/token";
-
-const mockUsers: Record<string, UserData> = {
-  admin: {
-    id: "1",
-    username: "Администратор",
-    email: "admin@example.com",
-    role: "admin",
-  },
-  doctor: {
-    id: "2",
-    username: "Врач",
-    email: "doctor@example.com",
-    role: "doctor",
-  },
-  pharmacist: {
-    id: "3",
-    username: "Фармацевт",
-    email: "pharmacist@example.com",
-    role: "pharmacist",
-  },
-  patient: {
-    id: "4",
-    username: "Пациент",
-    email: "patient@example.com",
-    role: "patient",
-  },
-};
 
 type FieldType = {
   phone?: string;
   password?: string;
 };
 
+const ERROR_TEXT = "Неверный номер телефона или пароль.";
+const DEFAULT_ERROR_TEXT = "";
+
 export const LoginPage = () => {
+  const [error, setError] = useState(DEFAULT_ERROR_TEXT);
+
   const { setUserData } = useAppContext();
+
   const navigate = useNavigate();
 
-  const login = (user: UserData | null) => {
-    setToken({
-      id: user?.username || "",
-      username: user?.username || "",
-      email: user?.email || "",
-      role: user?.role || "patient",
-    });
+  const onFinish: FormProps<FieldType>['onFinish'] = useCallback(({ phone, password }: FieldType) => {
+    if (phone && password) {
+      signin(phone, password)
+        .then((response) => {
+          if (!response.ok) {
+            throw "";
+          }
+          return response;
+        })
+        .then((response) => response.json())
+        .then((data) => {
+          if (data && Object.keys(data).length > 0) {
+            setUserData(data);
+            setToken(data);
+            setError(DEFAULT_ERROR_TEXT);
 
-    setUserData(user);
-    if (user && user?.role !== "patient") {
-      navigate("/medicines");
-    } else if (user) {
-      navigate("/prescriptions");
+            if (data.user_role !== "patient") {
+              navigate("/medicines");
+            } else {
+              navigate("/prescriptions");
+            }
+          } else {
+            setError(ERROR_TEXT);
+          }
+        })
+        .catch((e) => {
+          setError(ERROR_TEXT);
+          console.error(e)
+        });
     }
-  };
+  }, [navigate, setUserData]);
 
   return (
     <Layout className={styles.loginPage}>
-      <Form className={styles.loginForm} autoComplete="off">
+      <Form className={styles.loginForm} autoComplete="off" onFinish={onFinish}>
         <div className={styles.texts}>
           <img src={logo} />
           <h1>
@@ -90,39 +84,18 @@ export const LoginPage = () => {
         <Form.Item label={null}>
           <Button
             type="primary"
-            onClick={() => login(mockUsers.admin)}
-            className={styles.login}
-          >
-            Войти как админ
-          </Button>
-        </Form.Item>
-        <Form.Item label={null}>
-          <Button
-            type="primary"
-            onClick={() => login(mockUsers.doctor)}
-            className={styles.login}
-          >
-            Войти как врач
-          </Button>
-        </Form.Item>
-        <Form.Item label={null}>
-          <Button
-            type="primary"
-            onClick={() => login(mockUsers.pharmacist)}
-            className={styles.login}
-          >
-            Войти как фармацевт
-          </Button>
-        </Form.Item>
-        <Form.Item label={null}>
-          <Button
-            type="primary"
-            onClick={() => login(mockUsers.patient)}
+            htmlType="submit"
             className={styles.login}
           >
             Войти
           </Button>
         </Form.Item>
+        {!!error && <Form.Item label={null}>
+          <span className={styles.error}>
+            {error}
+          </span>
+        </Form.Item>
+        }
       </Form>
       <Button
         type="link"

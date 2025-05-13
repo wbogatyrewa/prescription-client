@@ -234,10 +234,10 @@ export const UsersPage = () => {
           ];
 
           if (userData) {
-            if (userData.role === "admin") {
+            if (userData.user_role === "admin") {
               buttons.push({
                 link: `/users/create?key=${render.key}`,
-                onClick: () => {},
+                onClick: () => { },
                 label: `Редактировать`,
               });
               buttons.push({
