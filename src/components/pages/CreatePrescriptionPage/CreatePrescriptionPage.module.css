@@ -13,3 +13,10 @@
   align-items: center;
   gap: 16px;
 }
+
+.error {
+  display: block;
+  color: #ff4d4f;
+  font-size: 14px;
+  text-align: center;
+}

@@ -1,6 +1,8 @@
 import { Modal } from "antd";
 import { ExclamationCircleFilled } from "@ant-design/icons";
 import styles from "./ConfirmIssueModal.module.css";
+import givePrescription from "../../../api/prescriptions/givePrescription";
+import { useAppContext } from "../../../contexts/AppContext/AppContext";
 
 type ConfirmIssueModalProps = {
   isOpen: boolean;
@@ -13,9 +15,23 @@ export const ConfirmIssueModal = ({
   setIsOpen,
   prescriptionKey,
 }: ConfirmIssueModalProps) => {
+  const { userData } = useAppContext();
+
   const handleOk = () => {
-    // запрос на выдачу рецепта и релоад страницы, чтобы подгрузить новые статусы
-    setIsOpen(false);
+    if (userData && userData.uuid) {
+      givePrescription(prescriptionKey, userData.uuid)
+        .then((response) => {
+          if (!response.ok) {
+            throw "";
+          }
+
+          setIsOpen(false);
+          window.location.reload();
+        })
+        .catch((e) => {
+          console.error(e)
+        });
+    }
   };
 
   const handleCancel = () => {

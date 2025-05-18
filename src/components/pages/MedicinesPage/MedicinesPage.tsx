@@ -1,12 +1,11 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import Layout, { Content } from "antd/es/layout/layout";
 import { Header } from "../../organisms/Header/Header";
-import { Button, Table } from "antd";
+import { Button, Table, TableColumnsType } from "antd";
 import styles from "./MedicinesPage.module.css";
 import { Link } from "react-router";
 import { useTableSearch } from "../../../hooks/useTableSearch";
 import { getColumnSearchProps } from "../../../utils/getColumnSearchProps";
-import { useAppContext } from "../../../contexts/AppContext/AppContext";
+import { MedicineType, useAppContext } from "../../../contexts/AppContext/AppContext";
 import { useMemo, useState } from "react";
 import { MedicineModal } from "../../Modals/MedicineModal/MedicineModal";
 import { DeleteMedicineModal } from "../../Modals/DeleteMedicineModal/DeleteMedicineModal";
@@ -22,7 +21,7 @@ export const MedicinesPage = () => {
   const { userData, medicines } = useAppContext();
   const { user_role } = userData || {}
 
-  const columns = useMemo(
+  const columns: TableColumnsType<MedicineType> = useMemo(
     () => [
       {
         title: "Название",
@@ -79,12 +78,12 @@ export const MedicinesPage = () => {
       {
         title: "Действия",
         key: "actions",
-        render: (_: any, render: any) => {
+        render: (_, render) => {
           const buttons = [
             {
               link: ``,
               onClick: () => {
-                setCurrentMedicineKey(render.key);
+                setCurrentMedicineKey(render.uuid || "");
                 setIsOpenMedicineModal(true);
               },
               label: `Открыть`,
@@ -93,14 +92,14 @@ export const MedicinesPage = () => {
 
           if (user_role === "admin") {
             buttons.push({
-              link: `/medicines/create?key=${render.key}`,
+              link: `/medicines/create?uuid=${render.uuid}`,
               onClick: () => { },
               label: `Редактировать`,
             });
             buttons.push({
               link: ``,
               onClick: () => {
-                setCurrentMedicineKey(render.key);
+                setCurrentMedicineKey(render.uuid || "");
                 setIsOpenDeleteMedicineModal(true);
               },
               label: `Удалить`,

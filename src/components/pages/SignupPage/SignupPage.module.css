@@ -31,3 +31,10 @@
     flex-direction: row;
   }
 }
+
+.error {
+  display: block;
+  color: #ff4d4f;
+  font-size: 14px;
+  text-align: center;
+}

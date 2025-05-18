@@ -1,5 +1,7 @@
 import { Badge, Descriptions, DescriptionsProps, Modal } from "antd";
 import styles from "./PrescriptionModal.module.css";
+import { statusMap, useAppContext } from "../../../contexts/AppContext/AppContext";
+import { useMemo } from "react";
 
 type PrescriptionModalProps = {
   isOpen: boolean;
@@ -7,94 +9,14 @@ type PrescriptionModalProps = {
   prescriptionKey: string;
 };
 
-const medicineItems: DescriptionsProps["items"] = [
-  {
-    key: "1",
-    label: "Название препарата",
-    children: "Амоксициллин",
-  },
-  {
-    key: "2",
-    label: "Форма выпуска",
-    children: "Таблетки",
-  },
-  {
-    key: "3",
-    label: "Количество",
-    children: "50 таб.",
-  },
-  {
-    key: "4",
-    label: "Дозировка",
-    children: "500 мг",
-  },
-];
-
-const prescriptionItems: DescriptionsProps["items"] = [
-  {
-    key: "1",
-    label: "Дата создания",
-    children: "2025-03-05 08:28:36",
-  },
-  {
-    key: "2",
-    label: "Дата истечения срока действия",
-    children: "2025-04-05 08:28:36",
-  },
-  {
-    key: "3",
-    label: "Тип рецепта",
-    children: "За полную стоимость",
-  },
-  {
-    key: "4",
-    label: "Статус",
-    children: <Badge color="#52C41A" text="Создан" />,
-  },
-  {
-    key: "5",
-    label: "Способ применения",
-    children: "По 1 таблетке 2-3 раза в сутки после еды.",
-  },
-];
-
-const patientItems: DescriptionsProps["items"] = [
-  {
-    key: "1",
-    label: "ФИО",
-    children: "Богатырева Вероника Олеговна",
-  },
-  {
-    key: "2",
-    label: "Дата рождения",
-    children: "2021-03-05",
-  },
-  {
-    key: "3",
-    label: "Серия и номер паспорта",
-    children: "1234567890",
-  },
-];
-
-const hospitalItems: DescriptionsProps["items"] = [
-  {
-    key: "1",
-    label: "Название",
-    children: "ГБУЗ «ГП №19 ДЗМ»",
-  },
-  {
-    key: "2",
-    label: "Врач",
-    children: "Терапевт Сидоров Иван Иванович",
-  },
-];
-
 export const PrescriptionModal = ({
   isOpen,
   setIsOpen,
   prescriptionKey,
 }: PrescriptionModalProps) => {
-  // при открытии модалки получать с бека все данные о рецепте
+  const { prescriptions } = useAppContext();
+
+  const prescription = useMemo(() => prescriptionKey && prescriptions ? prescriptions.find((elem) => elem.uuid === prescriptionKey) : undefined, [prescriptionKey, prescriptions]);
 
   const handleOk = () => {
     setIsOpen(false);
@@ -104,9 +26,112 @@ export const PrescriptionModal = ({
     setIsOpen(false);
   };
 
+
+  const medicineItems: DescriptionsProps["items"] = [
+    {
+      key: "1",
+      label: "Название препарата",
+      children: prescription?.medicine?.name,
+    },
+    {
+      key: "2",
+      label: "Форма выпуска",
+      children: prescription?.medicine?.form,
+    },
+    {
+      key: "3",
+      label: "Количество",
+      children: prescription?.medicine?.count,
+    },
+    {
+      key: "4",
+      label: "Дозировка",
+      children: prescription?.medicine?.dosage,
+    },
+    {
+      key: "5",
+      label: "Производитель",
+      children: prescription?.medicine?.producer,
+    },
+  ];
+
+  const prescriptionItems: DescriptionsProps["items"] = [
+    {
+      key: "1",
+      label: "Дата создания",
+      children: new Date(prescription?.created_at || "").toLocaleDateString(),
+    },
+    {
+      key: "2",
+      label: "Дата истечения срока действия",
+      children: new Date(prescription?.expiration_time || "").toLocaleDateString(),
+    },
+    {
+      key: "3",
+      label: "Тип рецепта",
+      children: prescription?.type,
+    },
+    {
+      key: "4",
+      label: "Статус",
+      children: <Badge color="#52C41A" text={prescription && prescription.status && prescription.status in statusMap ? statusMap[prescription.status] : ""} />,
+    },
+    {
+      key: "5",
+      label: "Способ применения",
+      children: prescription?.description,
+    },
+  ];
+
+  const patientItems: DescriptionsProps["items"] = [
+    {
+      key: "1",
+      label: "ФИО",
+      children: prescription?.patient?.full_name,
+    },
+    {
+      key: "2",
+      label: "Дата рождения",
+      children: new Date(prescription?.patient?.birth_date || "").toLocaleDateString(),
+    },
+    {
+      key: "3",
+      label: "Серия и номер паспорта",
+      children: prescription?.patient?.passport_number,
+    },
+    {
+      key: "4",
+      label: "Дата выдачи паспорта",
+      children: new Date(prescription?.patient?.passport_date || "").toLocaleDateString(),
+    },
+    {
+      key: "5",
+      label: "Кем выдан паспорт",
+      children: prescription?.patient?.passport_issuer,
+    },
+  ];
+
+  const hospitalItems: DescriptionsProps["items"] = [
+    {
+      key: "1",
+      label: "Название",
+      children: prescription?.doctor?.organization,
+    },
+    {
+      key: "2",
+      label: "Врач",
+      children: prescription?.doctor?.full_name,
+    },
+    {
+      key: "4",
+      label: "Специализация",
+      children: prescription?.doctor?.position,
+    },
+  ];
+
   return (
     <Modal
-      title={`Информация о рецепте №${prescriptionKey}`}
+      title={<p>Информация о рецепте <br /> №{prescriptionKey}</p>}
       open={isOpen}
       onOk={handleOk}
       onCancel={handleCancel}

@@ -1,23 +1,34 @@
 import Layout, { Content } from "antd/es/layout/layout";
 import { Header } from "../../organisms/Header/Header";
-import { Badge, Button, Flex, Input, Table } from "antd";
+import { Badge, Button, Flex, Input, Table, TableColumnsType } from "antd";
 import styles from "./PrescriptionsPage.module.css";
-import { useEffect, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { PrescriptionModal } from "../../Modals/PrescriptionModal/PrescriptionModal";
 import { useTableSearch } from "../../../hooks/useTableSearch";
 import { getColumnSearchProps } from "../../../utils/getColumnSearchProps";
-import { useAppContext } from "../../../contexts/AppContext/AppContext";
+import { PrescriptionType, statusMap, useAppContext } from "../../../contexts/AppContext/AppContext";
 import { Link } from "react-router";
 import { ConfirmIssueModal } from "../../Modals/ConfirmIssueModal/ConfirmIssueModal";
 import { DownloadOutlined } from "@ant-design/icons";
-import getMedicines from "../../../api/medicines/getMedicines";
+import getPrescription from "../../../api/prescriptions/getPrescription";
 
 export const PrescriptionsPage = () => {
   const [isOpenPrescriptionModal, setIsOpenPrescriptionModal] = useState(false);
   const [isOpenConfirmIssueModal, setIsOpenConfirmIssueModal] = useState(false);
   const [currentPrescriptionKey, setCurrentPrescriptionKey] = useState("");
-  const [inputPrescriptionKey, setInputPrescriptionKey] = useState<number>();
-  const [data, setData] = useState();
+  const [inputPrescriptionKey, setInputPrescriptionKey] = useState("");
+  const [searchPrescription, setSearchPrescription] = useState<PrescriptionType>();
+
+  const { prescriptions } = useAppContext();
+
+  const data = useMemo(() =>
+    inputPrescriptionKey
+      ? searchPrescription
+        ? [searchPrescription]
+        : []
+      : prescriptions,
+    [inputPrescriptionKey, prescriptions, searchPrescription]
+  );
 
   const { userData } = useAppContext();
   const { user_role } = userData || {};
@@ -36,18 +47,50 @@ export const PrescriptionsPage = () => {
   };
 
   const changeSearchInput = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setInputPrescriptionKey(Number(e.target.value));
+    setInputPrescriptionKey(e.target.value);
+    setSearchPrescription(undefined);
   };
 
-  const searchPrescription = () => {
-    // поиск рецепта по номеру (запрос на бек)
-  };
+  const searchPrescriptionHandler = useCallback(() => {
+    getPrescription(inputPrescriptionKey)
+      .then((response) => {
+        if (!response.ok) {
+          throw "";
+        }
+        return response;
+      })
+      .then((response) => response.json())
+      .then((data) => {
+        if (data && Object.keys(data).length > 0) {
+          setSearchPrescription(data);
+        } else {
+          setSearchPrescription(undefined);
+        }
+      })
+      .catch((e) => {
+        setSearchPrescription(undefined);
+        console.error(e)
+      });
+  }, [inputPrescriptionKey]);
 
-  const columns = [
+  const columns: TableColumnsType<PrescriptionType> = [
+    {
+      title: "№",
+      dataIndex: "uuid",
+      key: "uuid",
+      ...getColumnSearchProps({
+        searchText,
+        searchedColumn,
+        searchInput,
+        handleSearch,
+        handleReset,
+        dataIndex: "uuid",
+      }),
+    },
     {
       title: "Название препарата",
-      dataIndex: "name",
-      key: "name",
+      dataIndex: ["medicine", "name"],
+      key: "medicine",
       ...getColumnSearchProps({
         searchText,
         searchedColumn,
@@ -59,21 +102,21 @@ export const PrescriptionsPage = () => {
     },
     {
       title: "ФИО пациента",
-      dataIndex: "patient",
-      key: "patient",
+      dataIndex: ["patient", "full_name"],
+      key: "patient.full_name",
       ...getColumnSearchProps({
         searchText,
         searchedColumn,
         searchInput,
         handleSearch,
         handleReset,
-        dataIndex: "patient",
+        dataIndex: "full_name",
       }),
     },
     {
       title: "Тип рецепта",
-      dataIndex: "typeOfPrescription",
-      key: "typeOfPrescription",
+      dataIndex: "type",
+      key: "type",
       filters: [
         {
           text: "За полную стоимость",
@@ -85,7 +128,7 @@ export const PrescriptionsPage = () => {
         },
       ],
       onFilter: (value, record) =>
-        record.typeOfPrescription.startsWith(value as string),
+        record.type?.startsWith(value as string) || false,
     },
     {
       title: "Статус",
@@ -95,13 +138,13 @@ export const PrescriptionsPage = () => {
       render: (_, render) => (
         <Badge
           color={
-            render.status === "Создан"
+            render.status === "CREATED"
               ? "#52C41A"
-              : render.status === "Просрочен"
+              : render.status === "EXPIRED"
                 ? "#FF4D4F"
                 : "#D9D9D9"
           }
-          text={render.status}
+          text={render.status && render.status in statusMap ? statusMap[render.status] : ""}
         />
       ),
       filters: [
@@ -118,12 +161,13 @@ export const PrescriptionsPage = () => {
           value: "Выдан",
         },
       ],
-      onFilter: (value, record) => record.status.startsWith(value as string),
+      onFilter: (value, record) => record && record.status ? statusMap[record.status]?.startsWith(value as string) : false,
     },
     {
       title: "Дата создания",
-      dataIndex: "createdDate",
-      key: "createdDate",
+      dataIndex: "created_at",
+      key: "created_at",
+      render: item => new Date(item).toLocaleDateString(),
     },
     {
       title: "Действия",
@@ -133,7 +177,7 @@ export const PrescriptionsPage = () => {
           {
             link: ``,
             onClick: () => {
-              openPrescriptionModal(render.key);
+              openPrescriptionModal(render.uuid || "");
             },
             label: `Открыть`,
           },
@@ -142,12 +186,12 @@ export const PrescriptionsPage = () => {
         if (userData) {
           if (
             user_role === "pharmacist" &&
-            render.status === "Создан"
+            render.status === "CREATED"
           ) {
             buttons.push({
               link: ``,
               onClick: () => {
-                openConfirmIssueModal(render.key);
+                openConfirmIssueModal(render.uuid || "");
               },
               label: `Выдать`,
             });
@@ -168,31 +212,6 @@ export const PrescriptionsPage = () => {
       },
     },
   ];
-
-  useEffect(() => {
-    // getMedicines().then((response) => {
-    //   if (!response.ok) {
-    //     throw "";
-    //   }
-    //   return response;
-    // })
-    //   .then((response) => response.json())
-    //   .then((data) => {
-    //     if (data && data.length > 0) {
-    //       // 
-    //     } else {
-    //       // setError(ERROR_TEXT);
-    //     }
-    //   })
-    //   .catch((e) => {
-    //     // setError(ERROR_TEXT);
-    //     console.error(e)
-    //   });
-
-    // if (user_role === "pharmacist") {
-    //   setData(data.filter((elem) => elem.status === "Выдан"));
-    // }
-  }, []);
 
   return (
     <Layout>
@@ -215,13 +234,12 @@ export const PrescriptionsPage = () => {
             className={styles.searchInput}
             value={inputPrescriptionKey}
             onChange={changeSearchInput}
-            type="number"
           />
-          <Button type="primary" onClick={searchPrescription}>
+          <Button type="primary" onClick={searchPrescriptionHandler}>
             Поиск
           </Button>
         </Flex>
-        {data && data.length > 0 && (
+        {prescriptions && prescriptions.length > 0 && (user_role === "admin" || user_role === "pharmacist") && (
           <Button
             type="primary"
             icon={<DownloadOutlined />}

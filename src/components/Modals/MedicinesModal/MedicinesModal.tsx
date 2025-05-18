@@ -1,8 +1,7 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import { Button, Modal, Table } from "antd";
+import { Button, Modal, Table, TableColumnsType } from "antd";
 import { getColumnSearchProps } from "../../../utils/getColumnSearchProps";
 import { useTableSearch } from "../../../hooks/useTableSearch";
-import { useAppContext } from "../../../contexts/AppContext/AppContext";
+import { MedicineType, useAppContext } from "../../../contexts/AppContext/AppContext";
 import { useMemo } from "react";
 
 type MedicinesModalProps = {
@@ -28,7 +27,7 @@ export const MedicinesModal = ({
     setIsOpen(false);
   };
 
-  const columns = useMemo(
+  const columns: TableColumnsType<MedicineType> = useMemo(
     () => [
       {
         title: "Название",
@@ -85,9 +84,9 @@ export const MedicinesModal = ({
       {
         title: "Действия",
         key: "actions",
-        render: (_: any, render: any) => {
+        render: (_, render) => {
           return <Button onClick={() => {
-            setMedicineId(render.uuid);
+            setMedicineId(render.uuid || "");
             setIsOpen(false);
           }}>
             Выбрать

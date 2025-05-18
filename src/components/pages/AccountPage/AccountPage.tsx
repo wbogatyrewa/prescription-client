@@ -2,129 +2,119 @@ import { Descriptions, DescriptionsProps, Layout } from "antd";
 import styles from "./AccountPage.module.css";
 import { Content } from "antd/es/layout/layout";
 import { Header } from "../../organisms/Header/Header";
-// import { useAppContext } from "../../../contexts/AppContext/AppContext";
-
-const personalItems: DescriptionsProps["items"] = [
-  {
-    key: "1",
-    label: "Фамилия",
-    children: "Богатырева",
-  },
-  {
-    key: "2",
-    label: "Имя",
-    children: "Вероника",
-  },
-  {
-    key: "3",
-    label: "Отчество",
-    children: "Олеговна",
-  },
-  {
-    key: "4",
-    label: "Пол",
-    children: "Ж",
-  },
-  {
-    key: "5",
-    label: "Дата рождения",
-    children: "01-01-2001",
-  },
-];
-
-const addressItems: DescriptionsProps["items"] = [
-  // {
-  //   key: "1",
-  //   label: "Область",
-  //   children: "",
-  // },
-  {
-    key: "2",
-    label: "Город",
-    children: "Москва",
-  },
-  {
-    key: "3",
-    label: "Улица",
-    children: "Ленина",
-  },
-  {
-    key: "4",
-    label: "Номер дома",
-    children: "7",
-  },
-  {
-    key: "5",
-    label: "Квартира",
-    children: "78",
-  },
-];
-
-const passportItems: DescriptionsProps["items"] = [
-  {
-    key: "1",
-    label: "Серия и номер паспорта",
-    children: "7895456789",
-  },
-  {
-    key: "2",
-    label: "Дата выдачи",
-    children: "2021-03-05",
-  },
-  {
-    key: "3",
-    label: "Кем выдано",
-    children: "ГУ МВД",
-  },
-];
-
-const contactsItems: DescriptionsProps["items"] = [
-  {
-    key: "1",
-    label: "Номер телефона",
-    children: "+79856547821",
-  },
-  {
-    key: "2",
-    label: "Почта",
-    children: "veronika01-01@mail.ru",
-  },
-];
-
-const organizationItems: DescriptionsProps["items"] = [
-  {
-    key: "1",
-    label: "Название",
-    children: "ГБУЗ «ГП №19 ДЗМ»",
-  },
-  {
-    key: "2",
-    label: "Роль пользователя",
-    children: "Врач",
-  },
-  {
-    key: "3",
-    label: "Специализация",
-    children: "Терапевт",
-  },
-];
+import { EmployerType, PatientType, useAppContext } from "../../../contexts/AppContext/AppContext";
 
 export const AccountPage = () => {
-  // при открытии страницы получать с бека все данные о юзере
-  // const { userData } = useAppContext();
+  const { userData, patients, employees } = useAppContext();
+
+  const user: PatientType | EmployerType = userData?.user_role === "patient"
+    ? patients.find(elem => elem.uuid === userData.uuid) as PatientType
+    : employees.find(elem => elem.uuid === userData?.uuid) as EmployerType;
+
+  const personalItems: DescriptionsProps["items"] = [
+    {
+      key: "1",
+      label: "ФИО",
+      children: user?.full_name,
+    },
+    {
+      key: "4",
+      label: "Пол",
+      children: user?.gender,
+    },
+    {
+      key: "5",
+      label: "Дата рождения",
+      children: new Date(user?.birth_date || "").toLocaleDateString(),
+    },
+  ];
+
+  // const addressItems: DescriptionsProps["items"] = [
+  //   {
+  //     key: "1",
+  //     label: "Регион",
+  //     children: "",
+  //   },
+  //   {
+  //     key: "2",
+  //     label: "Город",
+  //     children: "Москва",
+  //   },
+  //   {
+  //     key: "3",
+  //     label: "Улица",
+  //     children: "Ленина",
+  //   },
+  //   {
+  //     key: "4",
+  //     label: "Номер дома",
+  //     children: "7",
+  //   },
+  //   {
+  //     key: "5",
+  //     label: "Квартира",
+  //     children: "78",
+  //   },
+  // ];
+
+  const passportItems: DescriptionsProps["items"] = [
+    {
+      key: "1",
+      label: "Серия и номер паспорта",
+      children: user?.passport_number,
+    },
+    {
+      key: "2",
+      label: "Дата выдачи",
+      children: new Date(user?.passport_date || "").toLocaleDateString(),
+    },
+    {
+      key: "3",
+      label: "Кем выдано",
+      children: user?.passport_issuer,
+    },
+  ];
+
+  const contactsItems: DescriptionsProps["items"] = [
+    {
+      key: "1",
+      label: "Номер телефона",
+      children: user?.phone,
+    },
+    {
+      key: "2",
+      label: "Почта",
+      children: user?.email,
+    },
+  ];
+
+  const organizationItems: DescriptionsProps["items"] = [
+    {
+      key: "1",
+      label: "Название",
+      children: (user as EmployerType)?.organization,
+    },
+    {
+      key: "2",
+      label: "Роль пользователя",
+      children: (user as EmployerType)?.user_role,
+    },
+    {
+      key: "3",
+      label: "Специализация",
+      children: (user as EmployerType)?.position,
+    },
+    {
+      key: "4",
+      label: "Номер лицензии",
+      children: (user as EmployerType)?.licence_number,
+    },
+  ];
 
   return (
     <Layout>
       <Header defaultSelectedKeys={["0"]} />
       <Content className={styles.content}>
-        {/* <Descriptions
-          title="Данные пользователя"
-          items={accountItems}
-          bordered
-          column={1}
-          size="small"
-        /> */}
-
         <div className={styles.infoWrapper}>
           <Descriptions
             title="Персональные данные"
@@ -133,13 +123,13 @@ export const AccountPage = () => {
             column={1}
             size="small"
           />
-          <Descriptions
+          {/* <Descriptions
             title="Адрес проживания"
             items={addressItems}
             bordered
             column={1}
             size="small"
-          />
+          /> */}
           <Descriptions
             title="Паспортные данные"
             items={passportItems}

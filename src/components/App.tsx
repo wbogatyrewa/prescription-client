@@ -12,10 +12,13 @@ import { CreateUserPage } from "./pages/CreateUserPage/CreateUserPage";
 import { UsersPage } from "./pages/UsersPage/UsersPage";
 import { getToken } from "../api/auth/token";
 import getMedicines from "../api/medicines/getMedicines";
+import getPatients from "../api/users/getPatients";
+import getPrescriptions from "../api/prescriptions/getPrescriptions";
+import getEmployees from "../api/users/getEmployees";
 
 function App() {
   const navigate = useNavigate();
-  const { userData, setUserData, setMedicines } = useAppContext();
+  const { userData, setUserData, setMedicines, setPatients, setPrescriptions, setEmployees } = useAppContext();
 
   useEffect(() => {
     const storedUser = getToken();
@@ -48,6 +51,64 @@ function App() {
         console.error(e)
       });
   }, [setMedicines]);
+
+  useEffect(() => {
+    getPatients().then((response) => {
+      if (!response.ok) {
+        throw "";
+      }
+      return response;
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        if (data && data.length > 0) {
+          setPatients(data);
+        }
+      })
+      .catch((e) => {
+        console.error(e)
+      });
+  }, [setPatients]);
+
+  useEffect(() => {
+    if (userData && userData.user_role && userData.uuid && Object.keys(userData).length > 0) {
+      getPrescriptions(userData).then((response) => {
+        if (!response.ok) {
+          throw "";
+        }
+
+        return response;
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          if (data && data.length > 0) {
+            setPrescriptions(data);
+          }
+        })
+        .catch((e) => {
+          console.error(e)
+        });
+    }
+  }, [setPrescriptions, userData]);
+
+  useEffect(() => {
+    getEmployees().then((response) => {
+      if (!response.ok) {
+        throw "";
+      }
+
+      return response;
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        if (data && data.length > 0) {
+          setEmployees(data);
+        }
+      })
+      .catch((e) => {
+        console.error(e)
+      });
+  }, [setEmployees]);
 
   return (
     <Routes>

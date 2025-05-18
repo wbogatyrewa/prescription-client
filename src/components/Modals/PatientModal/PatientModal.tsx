@@ -1,6 +1,7 @@
 import { Button, Modal, Table, TableColumnsType } from "antd";
 import { getColumnSearchProps } from "../../../utils/getColumnSearchProps";
 import { useTableSearch } from "../../../hooks/useTableSearch";
+import { PatientType, useAppContext } from "../../../contexts/AppContext/AppContext";
 
 type PatientModalProps = {
   isOpen: boolean;
@@ -8,33 +9,13 @@ type PatientModalProps = {
   setPatientId: (id: string) => void;
 };
 
-interface DataType {
-  key: string;
-  name: string;
-  dateOfBirth: string;
-  SNILS: string;
-}
-
-const dataSource = [
-  {
-    key: "1",
-    name: "Богатырева Вероника Олеговна",
-    dateOfBirth: "2021-02-05",
-    SNILS: "150-360 078 54",
-  },
-  {
-    key: "2",
-    name: "Иванов Иван Иванович",
-    dateOfBirth: "2024-01-08",
-    SNILS: "451-150 123 47",
-  },
-];
-
 export const PatientModal = ({
   isOpen,
   setIsOpen,
   setPatientId,
 }: PatientModalProps) => {
+  const { patients } = useAppContext();
+
   const { searchText, searchedColumn, searchInput, handleSearch, handleReset } =
     useTableSearch();
 
@@ -46,45 +27,47 @@ export const PatientModal = ({
     setIsOpen(false);
   };
 
-  const columns: TableColumnsType<DataType> = [
+  const columns: TableColumnsType<PatientType> = [
     {
       title: "ФИО",
-      dataIndex: "name",
-      key: "name",
+      dataIndex: "full_name",
+      key: "full_name",
       ...getColumnSearchProps({
         searchText,
         searchedColumn,
         searchInput,
         handleSearch,
         handleReset,
-        dataIndex: "name",
+        dataIndex: "full_name",
       }),
+    },
+    {
+      title: "Пол",
+      dataIndex: "gender",
+      key: "gender",
+      ...getColumnSearchProps({
+        searchText,
+        searchedColumn,
+        searchInput,
+        handleSearch,
+        handleReset,
+        dataIndex: "gender",
+      }),
+      render: item => new Date(item).toLocaleDateString(),
     },
     {
       title: "Дата рождения",
-      dataIndex: "dateOfBirth",
-      key: "dateOfBirth",
+      dataIndex: "birth_date",
+      key: "birth_date",
       ...getColumnSearchProps({
         searchText,
         searchedColumn,
         searchInput,
         handleSearch,
         handleReset,
-        dataIndex: "dateOfBirth",
+        dataIndex: "birth_date",
       }),
-    },
-    {
-      title: "СНИЛС",
-      dataIndex: "SNILS",
-      key: "SNILS",
-      ...getColumnSearchProps({
-        searchText,
-        searchedColumn,
-        searchInput,
-        handleSearch,
-        handleReset,
-        dataIndex: "SNILS",
-      }),
+      render: item => new Date(item).toLocaleDateString(),
     },
     {
       title: "Действия",
@@ -93,7 +76,7 @@ export const PatientModal = ({
         <Button
           type="default"
           onClick={() => {
-            setPatientId(render.key);
+            setPatientId(render.uuid || "");
             setIsOpen(false);
           }}
         >
@@ -111,7 +94,7 @@ export const PatientModal = ({
       onCancel={handleCancel}
       footer=""
     >
-      <Table dataSource={dataSource} columns={columns} />
+      <Table dataSource={patients} columns={columns} />
     </Modal>
   );
 };

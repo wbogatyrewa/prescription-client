@@ -25,6 +25,7 @@ export const Header = ({ defaultSelectedKeys }: HeaderProps) => {
     removeToken();
     setUserData(null);
     navigate("/");
+    window.location.reload();
   };
 
   const items = useMemo(

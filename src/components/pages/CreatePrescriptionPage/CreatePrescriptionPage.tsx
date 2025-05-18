@@ -1,29 +1,71 @@
 import Layout, { Content } from "antd/es/layout/layout";
 import { Header } from "../../organisms/Header/Header";
-import { Button, DatePicker, Form, Input, Select } from "antd";
+import { Button, DatePicker, Form, FormProps, Input, Select } from "antd";
 import styles from "./CreatePrescriptionPage.module.css";
 import { PatientModal } from "../../Modals/PatientModal/PatientModal";
-import { useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { MedicinesModal } from "../../Modals/MedicinesModal/MedicinesModal";
+import { useAppContext } from "../../../contexts/AppContext/AppContext";
+import { useNavigate } from "react-router";
+import createPrescription from "../../../api/prescriptions/createPrescription";
 
 type FieldType = {
-  name?: string;
-  medicine?: string;
-  count?: number;
-  dosage?: number;
   expiredDate?: string;
   typeOfPrescription?: "Льготный" | "За полную стоимость";
   methodOfApplication?: string;
-  patient?: string;
 };
 
+const DEFAULT_ERROR_TEXT = "";
+const ERROR_TEXT = "Ошибка при создании аккаунта. Попробуйте позже.";
+
 export const CreatePrescriptionPage = () => {
-  // показать кнопку для выбора лекарства
+  const { userData, medicines, patients } = useAppContext();
+
+  const [error, setError] = useState(DEFAULT_ERROR_TEXT);
+
+  const navigate = useNavigate();
 
   const [isOpenPatientModal, setIsOpenPatientModal] = useState(false);
   const [isOpenMedicinesModal, setIsOpenMedicinesModal] = useState(false);
   const [patientId, setPatientId] = useState("");
   const [medicineId, setMedicineId] = useState("");
+
+  const medicine = useMemo(() => medicineId && medicines ? medicines.find((elem) => elem.uuid === medicineId) : undefined, [medicineId, medicines]);
+
+  const patient = useMemo(() => patientId && patients ? patients.find((elem) => elem.uuid === patientId) : undefined, [patientId, patients]);
+
+  const onFinish: FormProps<FieldType>['onFinish'] = useCallback(({
+    expiredDate,
+    typeOfPrescription,
+    methodOfApplication,
+  }: FieldType) => {
+    const prescription = {
+      doctor: userData?.uuid,
+      patient: patientId,
+      pharmacist: "",
+      status: "CREATED",
+      medicine_id: medicineId,
+      type: typeOfPrescription,
+      description: methodOfApplication,
+      created_at: Date.now(),
+      expiration_time: (new Date(expiredDate || "").getTime() / 1000)
+    }
+
+    if (expiredDate && typeOfPrescription && methodOfApplication && userData && userData.uuid && patientId && medicineId) {
+      createPrescription(prescription)
+        .then((response) => {
+          if (!response.ok) {
+            throw "";
+          }
+          setError(DEFAULT_ERROR_TEXT);
+          navigate("/prescriptions");
+        })
+        .catch((e) => {
+          setError(ERROR_TEXT);
+          console.error(e)
+        });
+    }
+  }, [medicineId, navigate, patientId, userData]);
 
   return (
     <Layout>
@@ -39,10 +81,9 @@ export const CreatePrescriptionPage = () => {
       />
       <Header defaultSelectedKeys={["3"]} />
       <Content className={styles.content}>
-        <Form className={styles.createForm} autoComplete="off">
+        <Form className={styles.createForm} autoComplete="off" onFinish={onFinish}>
           <Form.Item<FieldType>
             label="Лекарственный препарат"
-            name="medicine"
             rules={[
               { required: true, message: "Выберите лекарственный препарат" },
             ]}
@@ -52,12 +93,12 @@ export const CreatePrescriptionPage = () => {
                 Выбрать
               </Button>
             </div>
-            {!!medicineId && (
+            {!!medicineId && medicine && (
               <div>
-                <p>Название: Амоксициллин</p>
-                <p>Форма выпуска: Таблетки</p>
-                <p>Дозировка: 500 мг</p>
-                <p>Количество: 20 шт</p>
+                <p>Название: {medicine.name}</p>
+                <p>Форма выпуска: {medicine.form}</p>
+                <p>Дозировка: {medicine.dosage}</p>
+                <p>Количество: {medicine.count}</p>
               </div>
             )}
           </Form.Item>
@@ -91,7 +132,6 @@ export const CreatePrescriptionPage = () => {
           </Form.Item>
           <Form.Item<FieldType>
             label="Пациент"
-            name="patient"
             rules={[{ required: true, message: "Выберите пациента" }]}
           >
             <div className={styles.patientWrapper}>
@@ -99,17 +139,23 @@ export const CreatePrescriptionPage = () => {
                 Выбрать
               </Button>
             </div>
-            {!patientId && (
+            {patientId && patient && (
               <div>
-                <p>ФИО: Богатырева Вероника Олеговна</p>
-                <p>Дата рождения: 22.09.2001</p>
-                <p>Серия и номер паспорта: 1234567890</p>
+                <p>ФИО: {patient.full_name}</p>
+                <p>Дата рождения: {patient.birth_date}</p>
+                <p>Номер телефона: {patient.phone}</p>
+                <p>Серия и номер паспорта: {patient.passport_number}</p>
               </div>
             )}
           </Form.Item>
           <Form.Item label={null}>
-            <Button type="primary">Создать</Button>
+            <Button type="primary" htmlType="submit">Создать</Button>
           </Form.Item>
+          {!!error && <Form.Item label={null}>
+            <span className={styles.error}>
+              {error}
+            </span>
+          </Form.Item>}
         </Form>
       </Content>
     </Layout>
