@@ -53,7 +53,6 @@ export const PatientModal = ({
         handleReset,
         dataIndex: "gender",
       }),
-      render: item => new Date(item).toLocaleDateString(),
     },
     {
       title: "Дата рождения",

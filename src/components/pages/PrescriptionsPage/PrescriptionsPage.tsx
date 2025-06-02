@@ -11,6 +11,7 @@ import { Link } from "react-router";
 import { ConfirmIssueModal } from "../../Modals/ConfirmIssueModal/ConfirmIssueModal";
 import { DownloadOutlined } from "@ant-design/icons";
 import getPrescription from "../../../api/prescriptions/getPrescription";
+import exportExcel from "../../../api/prescriptions/exportExcel";
 
 export const PrescriptionsPage = () => {
   const [isOpenPrescriptionModal, setIsOpenPrescriptionModal] = useState(false);
@@ -213,6 +214,10 @@ export const PrescriptionsPage = () => {
     },
   ];
 
+  const exportExcelHandler = async () => {
+    await exportExcel();
+  };
+
   return (
     <Layout>
       <PrescriptionModal
@@ -244,6 +249,7 @@ export const PrescriptionsPage = () => {
             type="primary"
             icon={<DownloadOutlined />}
             className={styles.downloadButton}
+            onClick={exportExcelHandler}
           >
             Скачать
           </Button>

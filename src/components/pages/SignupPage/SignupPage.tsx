@@ -55,7 +55,7 @@ export const SignupPage = () => {
     const user = {
       phone,
       email,
-      user_role: "pharmacist",
+      user_role: "patient",
       full_name: fullName,
       gender,
       birth_date: dateOfBirth,
